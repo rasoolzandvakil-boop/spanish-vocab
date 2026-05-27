@@ -200,6 +200,7 @@
           <div class="exer-topic" id="exer-topic">…</div>
           <button class="exer-speak" id="exer-speak" aria-label="Hear prompt">🔊</button>
         </div>
+        <div class="exer-lesson-date" id="exer-lesson-date" style="font-size:11px; color:var(--muted); margin-top:-8px;"></div>
         <div class="exer-prompt" id="exer-prompt">…</div>
         <input type="text" class="exer-input" id="exer-input" placeholder="Type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <div class="exer-feedback" id="exer-feedback"></div>
@@ -269,6 +270,15 @@
       </div>
     </div>
     <div class="modal-section">
+      <div class="modal-label">Exercise order</div>
+      <div class="seg-group" id="exer-order-group">
+        <button class="seg" data-eo="lesson">Lesson</button>
+        <button class="seg" data-eo="smart">Smart</button>
+        <button class="seg" data-eo="random">Random</button>
+      </div>
+      <div class="exer-hint" style="display:block; margin-top:6px;">Lesson = chronological by Oriol's lesson date. Smart = unseen+wrong first. Random = shuffled.</div>
+    </div>
+    <div class="modal-section">
       <div class="modal-label">Exercise topic</div>
       <select id="topic-select"></select>
     </div>
@@ -306,21 +316,24 @@ const EXERCISES = [
     "answer": "era",
     "topic": "Pretérito vs Imperfecto",
     "hint": "description in the past = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Ayer ____ (ir) al supermercado y compré pan.",
     "answer": "fui",
     "topic": "Pretérito vs Imperfecto",
     "hint": "completed action = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Mi padre siempre ____ (cocinar) los domingos.",
     "answer": "cocinaba",
     "topic": "Pretérito vs Imperfecto",
     "hint": "habitual past = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Mientras yo ____ (leer), mi hermano ____ (entrar).",
@@ -330,217 +343,248 @@ const EXERCISES = [
     ],
     "topic": "Pretérito vs Imperfecto",
     "hint": "ongoing action vs interruption",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "La salsa ____ (estar) muy deliciosa.",
     "answer": "estaba",
     "topic": "Pretérito vs Imperfecto",
     "hint": "description = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "El año pasado yo ____ (visitar) Barcelona dos veces.",
     "answer": "visité",
     "topic": "Pretérito vs Imperfecto",
     "hint": "specific past event = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Cuando ____ (llegar) a casa, ya ____ (ser) tarde.",
     "answer": "llegué, era",
     "topic": "Pretérito vs Imperfecto",
     "hint": "action + state",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Nosotros ____ (estar) hablando cuando sonó el teléfono.",
     "answer": "estábamos",
     "topic": "Pretérito vs Imperfecto",
     "hint": "background action = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Mi hermano ____ médico.",
     "answer": "es",
     "topic": "Ser vs Estar",
     "hint": "profession = ser",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "La sopa ____ caliente, ten cuidado.",
     "answer": "está",
     "topic": "Ser vs Estar",
     "hint": "temporary state = estar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Ella ____ alta y morena.",
     "answer": "es",
     "topic": "Ser vs Estar",
     "hint": "characteristic = ser",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "¿Dónde ____ las llaves?",
     "answer": "están",
     "topic": "Ser vs Estar",
     "hint": "location = estar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Hoy ____ lunes.",
     "answer": "es",
     "topic": "Ser vs Estar",
     "hint": "day/date = ser",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Mis padres ____ en Italia esta semana.",
     "answer": "están",
     "topic": "Ser vs Estar",
     "hint": "location = estar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "La fiesta ____ en mi casa.",
     "answer": "es",
     "topic": "Ser vs Estar",
     "hint": "event taking place = ser",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "María ____ enferma; tiene fiebre.",
     "answer": "está",
     "topic": "Ser vs Estar",
     "hint": "temporary condition = estar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Voy ____ Madrid mañana. (a / en)",
     "answer": "a",
     "topic": "Prepositions",
     "hint": "motion toward = a",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Vivo ____ Barcelona desde 2010. (a / en)",
     "answer": "en",
     "topic": "Prepositions",
     "hint": "location = en",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Trabajo ____ el FMI. (a / en / por)",
     "answer": "en",
     "topic": "Prepositions",
     "hint": "workplace = en",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Salí ____ caminar después de comer.",
     "answer": "a",
     "topic": "Prepositions",
     "hint": "purpose of motion = a",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Caminé ____ la ciudad durante una hora.",
     "answer": "por",
     "topic": "Prepositions",
     "hint": "motion through = por",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Este regalo es ____ ti.",
     "answer": "para",
     "topic": "Prepositions",
     "hint": "recipient = para",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Lo hice ____ ti, porque te quiero.",
     "answer": "por",
     "topic": "Prepositions",
     "hint": "because of/for the sake of = por",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Antes ____ comer, me lavo las manos.",
     "answer": "de",
     "topic": "Prepositions",
     "hint": "antes/después + DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Después ____ las cinco salimos.",
     "answer": "de",
     "topic": "Prepositions",
     "hint": "antes/después + DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Gracias ____ tu ayuda.",
     "answer": "por",
     "topic": "Prepositions",
     "hint": "gracias por",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Esto depende ____ ti.",
     "answer": "de",
     "topic": "Prepositions",
     "hint": "depender DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Estoy rodeado ____ buenos amigos.",
     "answer": "de",
     "topic": "Prepositions",
     "hint": "rodeado DE/POR",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Voy a la oficina ____ las mañanas.",
     "answer": "por",
     "topic": "Prepositions",
     "hint": "parts of day = por",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Me ducho a las 8 ____ la mañana.",
     "answer": "de",
     "topic": "Prepositions",
     "hint": "with clock time = de",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "____ gusta el chocolate (to me).",
     "answer": "me",
     "topic": "Gustar",
     "hint": "me/te/le/nos/les + gusta",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-23"
   },
   {
     "prompt": "(A mí) me ____ las películas de terror.",
     "answer": "gustan",
     "topic": "Gustar",
     "hint": "plural subject = gustan",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-23"
   },
   {
     "prompt": "A nosotros ____ gusta caminar.",
     "answer": "nos",
     "topic": "Gustar",
     "hint": "to us = nos",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-23"
   },
   {
     "prompt": "A mis amigos ____ ____ las fiestas (les + verb)",
     "answer": "les gustan",
     "topic": "Gustar",
     "hint": "plural them, plural subject",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-23"
   },
   {
     "prompt": "Translate: I would like to travel to Spain.",
@@ -550,7 +594,8 @@ const EXERCISES = [
       "Me gustaría viajar a España."
     ],
     "topic": "Gustar",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-23"
   },
   {
     "prompt": "En el restaurante, yo ____ una pizza. (pedir/preguntar)",
@@ -560,7 +605,8 @@ const EXERCISES = [
     ],
     "topic": "Pedir vs Preguntar",
     "hint": "ask for a thing = pedir",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "El profesor me ____ mi nombre. (pedir/preguntar)",
@@ -570,7 +616,8 @@ const EXERCISES = [
     ],
     "topic": "Pedir vs Preguntar",
     "hint": "ask a question = preguntar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Translate: He asked me where I live.",
@@ -580,7 +627,8 @@ const EXERCISES = [
       "me preguntó donde vivo"
     ],
     "topic": "Pedir vs Preguntar",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Translate: I asked for the bill.",
@@ -589,54 +637,62 @@ const EXERCISES = [
       "yo pedí la cuenta"
     ],
     "topic": "Pedir vs Preguntar",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Yo ____ a mis invitados en el sofá (sentar/sentarse)",
     "answer": "siento",
     "topic": "Reflexive verbs",
     "hint": "seat someone else = sentar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "Yo ____ con mis invitados (sentar/sentarse)",
     "answer": "me siento",
     "topic": "Reflexive verbs",
     "hint": "sit oneself = sentarse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "____ frío. (yo, sentir)",
     "answer": "siento",
     "topic": "Reflexive verbs",
     "hint": "sense = sentir",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "____ triste. (yo, sentirse)",
     "answer": "me siento",
     "topic": "Reflexive verbs",
     "hint": "feel emotion = sentirse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "____ a mi amiga de la universidad. (recordar)",
     "answer": "recuerdo",
     "topic": "Recordar vs Acordarse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Yo ____ de mi amiga de la universidad. (acordarse)",
     "answer": "me acuerdo",
     "topic": "Recordar vs Acordarse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Fill in the missing word: 'Me acuerdo ___ mis amigos.'",
     "answer": "de",
     "topic": "Recordar vs Acordarse",
     "hint": "acordarse + DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Replace 'al restaurante' with a pronoun: 'Le doy las estrellas al restaurante' → 'Le doy las estrellas.' Now combine 'Le' + 'las' into one phrase:",
@@ -646,7 +702,8 @@ const EXERCISES = [
     ],
     "topic": "Object pronouns",
     "hint": "le → se before lo/la",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-13"
   },
   {
     "prompt": "Translate: They don't understand it.",
@@ -656,7 +713,8 @@ const EXERCISES = [
     ],
     "topic": "Object pronouns",
     "hint": "don't say 'no entienden eso'",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-13"
   },
   {
     "prompt": "Translate: I gave it to her. (it = the book)",
@@ -665,112 +723,128 @@ const EXERCISES = [
       "se lo di"
     ],
     "topic": "Object pronouns",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-13"
   },
   {
     "prompt": "Mi padre es más alto ____ yo.",
     "answer": "que",
     "topic": "Comparatives",
     "hint": "comparison with a noun = que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "Mi padre es más alto ____ ____ ____ yo recuerdo.",
     "answer": "de lo que",
     "topic": "Comparatives",
     "hint": "comparison with clause = de lo que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "Tengo menos ____ 10 cervezas.",
     "answer": "de",
     "topic": "Comparatives",
     "hint": "with number = de",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "El español es ____ difícil ____ el francés. (as ___ as)",
     "answer": "tan, como",
     "topic": "Comparatives",
     "hint": "equality = tan...como",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "Después de ____ (comer), salgo a caminar.",
     "answer": "comer",
     "topic": "Gerundio vs Infinitivo",
     "hint": "after preposition = infinitive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "Para ____ (mejorar) tu español, debes practicar.",
     "answer": "mejorar",
     "topic": "Gerundio vs Infinitivo",
     "hint": "after preposition = infinitive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "Sigo ____ (estudiar) español todos los días.",
     "answer": "estudiando",
     "topic": "Gerundio vs Infinitivo",
     "hint": "seguir + gerundio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "____ (hacer) deportes regularmente tiene muchos beneficios.",
     "answer": "Hacer",
     "topic": "Gerundio vs Infinitivo",
     "hint": "subject = infinitive (not gerund)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "Estoy ____ (escribir) un libro.",
     "answer": "escribiendo",
     "topic": "Gerundio vs Infinitivo",
     "hint": "estar + gerundio = progressive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "____ (practicar) frecuentemente, mejoramos.",
     "answer": "Practicando",
     "topic": "Gerundio vs Infinitivo",
     "hint": "adverbial 'by Xing' = gerundio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-04"
   },
   {
     "prompt": "Entendí ____ ____ me dijiste. (= what you told me)",
     "answer": "lo que",
     "topic": "Lo que vs Que",
     "hint": "'what' as object = lo que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Entendí ____ me dijiste algo importante. (= I understood that you told me)",
     "answer": "que",
     "topic": "Lo que vs Que",
     "hint": "'that' (conjunction) = que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Trabajo en ____ FMI.",
     "answer": "el",
     "topic": "Articles",
     "hint": "institutions take el",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Hoy es ____ día perfecto. (note gender)",
     "answer": "un",
     "topic": "Articles",
     "hint": "día is masculine!",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Estoy aprendiendo ____ español. (= the Spanish language)",
     "answer": "el",
     "topic": "Articles",
     "hint": "idioma is masculine!",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Yo soy ____ economista. (profession, unmodified)",
@@ -783,55 +857,63 @@ const EXERCISES = [
       "ninguno",
       "ningún",
       "--"
-    ]
+    ],
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Yo soy ____ buen economista. (with adjective)",
     "answer": "un",
     "topic": "Articles",
     "hint": "article comes back with adjective",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "El ____ piso (1st floor, masc).",
     "answer": "primer",
     "topic": "Apocope",
     "hint": "before masc noun = primer",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "La ____ vez (the first time).",
     "answer": "primera",
     "topic": "Apocope",
     "hint": "feminine = primera",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "____, vamos a beber. (First/Firstly)",
     "answer": "Primero",
     "topic": "Apocope",
     "hint": "adverb = primero",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Es un ____ libro (a good book, masc).",
     "answer": "buen",
     "topic": "Apocope",
     "hint": "bueno before masc noun = buen",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Es un ____ día (a bad day, masc).",
     "answer": "mal",
     "topic": "Apocope",
     "hint": "malo before masc noun = mal",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "____ 10 años yo vivía en otra ciudad. (10 years ago)",
     "answer": "Hace",
     "topic": "Time expressions",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Translate: I haven't seen her for 3 days.",
@@ -841,7 +923,8 @@ const EXERCISES = [
       "hace 3 días que no la veo"
     ],
     "topic": "Time expressions",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Choose: 'Nunca leo' / 'No leo nunca' / 'Tampoco no leo' — which is wrong?",
@@ -851,7 +934,8 @@ const EXERCISES = [
     ],
     "topic": "Negation",
     "hint": "tampoco doesn't combine with 'no' in that order",
-    "type": "multiple"
+    "type": "multiple",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "____ los mensajes de él ____ los de ella. (neither nor)",
@@ -860,7 +944,8 @@ const EXERCISES = [
       "ni, ni"
     ],
     "topic": "Negation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Correct the English-y word: 'los linkos' should be: ____",
@@ -870,7 +955,8 @@ const EXERCISES = [
       "los enlaces / los links"
     ],
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'la publica' (referring to the audience): ____",
@@ -879,7 +965,8 @@ const EXERCISES = [
       "el publico"
     ],
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'abilidades' → ____",
@@ -888,13 +975,15 @@ const EXERCISES = [
       "capacidades"
     ],
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'frequentamente' → ____",
     "answer": "frecuentemente",
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'environmente' → ____",
@@ -903,13 +992,15 @@ const EXERCISES = [
       "el entorno"
     ],
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'veer' → ____",
     "answer": "ver",
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Correct: 'partido largo' (long term) → ____",
@@ -918,67 +1009,78 @@ const EXERCISES = [
       "a largo plazo"
     ],
     "topic": "False friends",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-23"
   },
   {
     "prompt": "Conjugate JUGAR in 'yo' preterite (g→gu spelling change):",
     "answer": "jugué",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate BUSCAR in 'yo' preterite (c→qu spelling change):",
     "answer": "busqué",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate LEER in 'él' preterite (y in 3rd p.):",
     "answer": "leyó",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate DECIR in 'yo' present:",
     "answer": "digo",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate IR in 'nosotros' present:",
     "answer": "vamos",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate TENER in 'tú' present:",
     "answer": "tienes",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate HACER in 'él' preterite:",
     "answer": "hizo",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate SER in 'yo' preterite:",
     "answer": "fui",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate IR in 'yo' preterite (same as SER):",
     "answer": "fui",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Conjugate DAR in 'él' preterite:",
     "answer": "dio",
     "topic": "Conjugation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Translate: I have eaten paella twice this week.",
@@ -987,7 +1089,8 @@ const EXERCISES = [
       "he comido paella dos veces esta semana"
     ],
     "topic": "Presente Perfecto",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Translate: You (tú) have said the truth.",
@@ -997,7 +1100,8 @@ const EXERCISES = [
       "tú has dicho la verdad"
     ],
     "topic": "Presente Perfecto",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "____ (yo, comer) en este restaurante muchas veces. (presente perfecto)",
@@ -1006,7 +1110,8 @@ const EXERCISES = [
       "he comido"
     ],
     "topic": "Presente Perfecto",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Translate: How often do you swim?",
@@ -1018,7 +1123,8 @@ const EXERCISES = [
       "¿con qué frecuencia nadas?"
     ],
     "topic": "Time/Frequency",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Translate: Every other day (literally: 'day yes, day no')",
@@ -1029,7 +1135,8 @@ const EXERCISES = [
       "cada dos días"
     ],
     "topic": "Time/Frequency",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Translate: The class is about to end.",
@@ -1038,7 +1145,8 @@ const EXERCISES = [
       "la clase está a punto de terminar"
     ],
     "topic": "Verb expressions",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-12"
   },
   {
     "prompt": "Translate: He refuses to come to the meeting.",
@@ -1048,7 +1156,8 @@ const EXERCISES = [
       "él se niega a venir a la reunión"
     ],
     "topic": "Verb expressions",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-12"
   },
   {
     "prompt": "Translate: I'm not here to complain.",
@@ -1057,7 +1166,8 @@ const EXERCISES = [
       "no estoy aquí para quejarme"
     ],
     "topic": "Verb expressions",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-12"
   },
   {
     "prompt": "Translate: I'm going to leave after eating, but I'll be back at 8:45 PM.",
@@ -1067,7 +1177,8 @@ const EXERCISES = [
       "voy a irme después de comer, pero voy a volver a las nueve menos cuarto de la noche"
     ],
     "topic": "Mixed",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-03"
   },
   {
     "prompt": "Translate: It seems that, usually, she asks for the headphones but never asks where they are.",
@@ -1076,7 +1187,8 @@ const EXERCISES = [
       "por lo visto, de costumbre ella pide los auriculares pero nunca pregunta dónde están"
     ],
     "topic": "Mixed",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-03"
   },
   {
     "prompt": "Translate: Can you (tú) lend me a glove? I need to explain something and describe the problem.",
@@ -1085,7 +1197,8 @@ const EXERCISES = [
       "puedes prestarme un guante? necesito explicar algo y describir el problema"
     ],
     "topic": "Mixed",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-03"
   },
   {
     "prompt": "Translate: I'm not going to get anxious — there's still room in the suitcase.",
@@ -1095,7 +1208,8 @@ const EXERCISES = [
       "no me voy a agobiar, todavía cabe en la maleta"
     ],
     "topic": "Mixed",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-03"
   },
   {
     "prompt": "Translate: Despite the cold, I go out for a run. (a pesar de + noun)",
@@ -1104,7 +1218,8 @@ const EXERCISES = [
       "a pesar del frío, salgo a correr"
     ],
     "topic": "Connectors",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Translate: Although I speak little, I like (it). (a pesar de que + verb)",
@@ -1113,7 +1228,8 @@ const EXERCISES = [
       "a pesar de que hablo poco, me gusta"
     ],
     "topic": "Connectors",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Translate: My grandmother is very old; however, she walks every day. (sin embargo)",
@@ -1122,7 +1238,8 @@ const EXERCISES = [
       "mi abuela es muy mayor; sin embargo, camina todos los días"
     ],
     "topic": "Connectors",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Translate: more and more",
@@ -1131,31 +1248,36 @@ const EXERCISES = [
       "cada vez mas"
     ],
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Translate: less and less",
     "answer": "cada vez menos",
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Translate: in principle / initially",
     "answer": "en principio",
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Translate: in second place / secondly",
     "answer": "en segundo lugar",
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Translate: just in case",
     "answer": "por si acaso",
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Translate: it's worth it",
@@ -1165,14 +1287,16 @@ const EXERCISES = [
       "merece la pena"
     ],
     "topic": "Idioms",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-02-17"
   },
   {
     "prompt": "Voy al gimnasio ____ ____ y ____ ____ (every other day).",
     "answer": "día sí y día no",
     "topic": "Vocab in context",
     "hint": "every other day",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (in the long run), aprender un idioma vale la pena.",
@@ -1182,28 +1306,32 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "in the long run",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Me siento muy estresado, voy a ____ (to get anxious) si sigo así.",
     "answer": "agobiarme",
     "topic": "Vocab in context",
     "hint": "reflexive: to get overwhelmed",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Tengo que ____ ____ (to hurry) porque el tren sale en 5 minutos.",
     "answer": "darme prisa",
     "topic": "Vocab in context",
     "hint": "reflexive idiom",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (from now on), voy a estudiar todos los días.",
     "answer": "a partir de ahora",
     "topic": "Vocab in context",
     "hint": "from now on",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ (despite) la lluvia, fuimos al parque.",
@@ -1213,14 +1341,16 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "despite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Vine aquí ____ ____ (by the way) — no tenía otro plan.",
     "answer": "por casualidad",
     "topic": "Vocab in context",
     "hint": "by chance",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ (of course) que te ayudo con la mudanza.",
@@ -1230,35 +1360,40 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "of course",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (apparently), van a cancelar el concierto.",
     "answer": "por lo visto",
     "topic": "Vocab in context",
     "hint": "apparently",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "No tengo ganas de salir, ____ ____ (besides), está lloviendo.",
     "answer": "además",
     "topic": "Vocab in context",
     "hint": "moreover",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (in fact), nunca he estado en Argentina.",
     "answer": "de hecho",
     "topic": "Vocab in context",
     "hint": "in fact",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Estudia más, ____ ____ ____ (otherwise) vas a suspender.",
     "answer": "de lo contrario",
     "topic": "Vocab in context",
     "hint": "otherwise",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ ____ (anyway), no tenía dinero para ir.",
@@ -1268,7 +1403,8 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "anyway",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Llegamos tarde ____ ____ ____ (due to) tráfico.",
@@ -1279,21 +1415,24 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "due to",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (deep down), sé que tienes razón.",
     "answer": "en el fondo",
     "topic": "Vocab in context",
     "hint": "deep down",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ ____ (in reality / actually), no fue tan difícil.",
     "answer": "en realidad",
     "topic": "Vocab in context",
     "hint": "actually",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ ____ (in summary), el viaje fue increíble.",
@@ -1303,7 +1442,8 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "in summary",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Me gusta el café, ____ ____ (on the other hand), odio el té.",
@@ -1314,14 +1454,16 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "by contrast",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (just in case), lleva un paraguas.",
     "answer": "por si acaso",
     "topic": "Vocab in context",
     "hint": "just in case",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Es un libro difícil, ____ ____ ____ ____ ____ (in my opinion / judgment).",
@@ -1332,28 +1474,32 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "in my judgment",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Yo ____ (acordarse) de tu cumpleaños.",
     "answer": "me acuerdo",
     "topic": "Vocab in context",
     "hint": "reflexive: to remember",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "¿Cuánto tiempo hace que tú ____ (vivir) aquí?",
     "answer": "vives",
     "topic": "Vocab in context",
     "hint": "present + hace que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Ayer mi vecino ____ (atropellar) un gato. ¡Qué horror!",
     "answer": "atropelló",
     "topic": "Vocab in context",
     "hint": "preterite of atropellar",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "El avión ____ (aterrizar) a las nueve de la noche.",
@@ -1363,21 +1509,24 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "to land",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Mi hermana siempre ____ (avisar) cuando llega tarde.",
     "answer": "avisa",
     "topic": "Vocab in context",
     "hint": "to let know",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Necesito ____ (recoger) a los niños del colegio.",
     "answer": "recoger",
     "topic": "Vocab in context",
     "hint": "to pick up",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Ella ____ (lograr) terminar el maratón.",
@@ -1387,182 +1536,208 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "preterite of lograr",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "No voy a ____ (negarse) a ayudarte.",
     "answer": "negarme",
     "topic": "Vocab in context",
     "hint": "reflexive infinitive: to refuse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Me ____ (sorprenderse) mucho con la noticia.",
     "answer": "sorprendí",
     "topic": "Vocab in context",
     "hint": "preterite reflexive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Después del partido, los jugadores ____ (quejarse) del árbitro.",
     "answer": "se quejaron",
     "topic": "Vocab in context",
     "hint": "reflexive past",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ + 10 años (hace) — I lived in Spain 10 years ago: ____ ____ ____ ____ (I lived in Spain) hace 10 años.",
     "answer": "Viví en España",
     "topic": "Vocab in context",
     "hint": "hace + tiempo for 'X time ago'",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Estamos ____ ____ ____ (about to) cenar cuando llegaste.",
     "answer": "a punto de",
     "topic": "Vocab in context",
     "hint": "about to + verb",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ + infinitivo (have to): ____ ____ estudiar más.",
     "answer": "Tengo que",
     "topic": "Vocab in context",
     "hint": "have to",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Sigue ____ (estudiar). (continue + gerund)",
     "answer": "estudiando",
     "topic": "Vocab in context",
     "hint": "seguir + gerundio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ ____ (more than) lo que pensaba — fue más caro ____ ____ ____ pensaba.",
     "answer": "de lo que",
     "topic": "Vocab in context",
     "hint": "comparison with clause = de lo que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Es más alto ____ (than) su hermano. (standard comparison)",
     "answer": "que",
     "topic": "Vocab in context",
     "hint": "más X que Y",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Tengo más libros ____ ____ ____ (than I need). (clause comparison)",
     "answer": "de los que",
     "topic": "Vocab in context",
     "hint": "plural clause comparison",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Hay más comida ____ ____ ____ (than we can eat). (mass noun + clause)",
     "answer": "de la que",
     "topic": "Vocab in context",
     "hint": "feminine singular clause",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Quiero ____ (probar) la paella antes de pedirla.",
     "answer": "probar",
     "topic": "Vocab in context",
     "hint": "to taste/try",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Voy a ____ (probarse) este vestido en el probador.",
     "answer": "probarme",
     "topic": "Vocab in context",
     "hint": "reflexive: try on clothes",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Mi padre ____ (volver) del trabajo a las siete.",
     "answer": "vuelve",
     "topic": "Vocab in context",
     "hint": "to return (present)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "¿Me puedes ____ (devolver) el libro que te presté?",
     "answer": "devolver",
     "topic": "Vocab in context",
     "hint": "to give back",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Esta tarea ____ (llevar) mucho tiempo.",
     "answer": "lleva",
     "topic": "Vocab in context",
     "hint": "llevar = to take (time)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Mi abuela ____ (traer) galletas siempre que viene.",
     "answer": "trae",
     "topic": "Vocab in context",
     "hint": "to bring (present)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Ya no ____ (haber) leche en la nevera.",
     "answer": "hay",
     "topic": "Vocab in context",
     "hint": "there is/are",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Ayer ____ (haber) mucha gente en la calle.",
     "answer": "había",
     "topic": "Vocab in context",
     "hint": "there was/were (imperfect)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Antes de salir, ____ (cerrar) la puerta con llave, por favor.",
     "answer": "cierra",
     "topic": "Vocab in context",
     "hint": "imperative tú",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Si tuviera más tiempo, ____ (viajar) más.",
     "answer": "viajaría",
     "topic": "Vocab in context",
     "hint": "conditional in si-clause",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Quiero que tú ____ (venir) a la fiesta.",
     "answer": "vengas",
     "topic": "Vocab in context",
     "hint": "present subjunctive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Espero que ____ (ir) bien tu examen.",
     "answer": "vaya",
     "topic": "Vocab in context",
     "hint": "present subjunctive of ir",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "No creo que ____ (ser) buena idea.",
     "answer": "sea",
     "topic": "Vocab in context",
     "hint": "present subjunctive of ser",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Cuando ____ (terminar) el trabajo, te llamo.",
     "answer": "termine",
     "topic": "Vocab in context",
     "hint": "future cuando-clause = subjunctive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ ____ (the next week / next week) tengo una reunión importante.",
@@ -1572,7 +1747,8 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "two ways to say next week",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "No me gustan los ____ (stingy people).",
@@ -1582,28 +1758,32 @@ const EXERCISES = [
     ],
     "topic": "Vocab in context",
     "hint": "adjective plural masculine",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Después de correr, tengo mucha ____ (thirst). Wait — ____ (hunger).",
     "answer": "hambre",
     "topic": "Vocab in context",
     "hint": "common noun",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Mi hijo ____ ____ ____ (was about to) llorar.",
     "answer": "estaba a punto de",
     "topic": "Vocab in context",
     "hint": "past 'about to'",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "____ ____ (every other day): Voy al gym ____ ____ ____ ____.",
     "answer": "día sí y día no",
     "topic": "Vocab in context",
     "hint": "idiom",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-15"
   },
   {
     "prompt": "Translate: I have to go to the doctor tomorrow.",
@@ -1613,7 +1793,8 @@ const EXERCISES = [
       "Mañana tengo que ir al médico"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: We are about to leave.",
@@ -1622,7 +1803,8 @@ const EXERCISES = [
       "estamos a punto de irnos"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: From now on, I'll study every day.",
@@ -1631,7 +1813,8 @@ const EXERCISES = [
       "A partir de ahora estudiaré todos los días"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: Despite the rain, we went to the park.",
@@ -1640,7 +1823,8 @@ const EXERCISES = [
       "Pese a la lluvia fuimos al parque"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: She remembers her childhood very well.",
@@ -1650,7 +1834,8 @@ const EXERCISES = [
       "Ella recuerda muy bien su infancia"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I have been living here for 5 years. (use hace)",
@@ -1660,7 +1845,8 @@ const EXERCISES = [
       "Llevo 5 años viviendo aquí"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: My brother is a doctor.",
@@ -1669,13 +1855,15 @@ const EXERCISES = [
       "Mi hermano es doctor"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: The soup is hot, be careful.",
     "answer": "La sopa está caliente, ten cuidado",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: How often do you exercise? (use cada cuánto)",
@@ -1685,7 +1873,8 @@ const EXERCISES = [
       "¿Cada cuánto tiempo haces ejercicio?"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I exercise every other day.",
@@ -1694,13 +1883,15 @@ const EXERCISES = [
       "Hago deporte día sí y día no"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I would like a coffee, please.",
     "answer": "Me gustaría un café, por favor",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: It seems to me that he's right.",
@@ -1709,7 +1900,8 @@ const EXERCISES = [
       "Me parece que él tiene razón"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I asked the waiter for the bill.",
@@ -1718,7 +1910,8 @@ const EXERCISES = [
       "Pedí la cuenta al camarero"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: She asked me where I lived.",
@@ -1727,7 +1920,8 @@ const EXERCISES = [
       "Ella me preguntó dónde vivía"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I'm going to continue studying. (gerund after continuar)",
@@ -1736,7 +1930,8 @@ const EXERCISES = [
       "Voy a seguir estudiando"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: They left without saying goodbye.",
@@ -1745,7 +1940,8 @@ const EXERCISES = [
       "Salieron sin decir adiós"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: It's worth going to Madrid in the spring.",
@@ -1754,7 +1950,8 @@ const EXERCISES = [
       "Compensa ir a Madrid en primavera"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I don't know whether to go or not.",
@@ -1763,7 +1960,8 @@ const EXERCISES = [
       "No sé si ir o no ir"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: The book that I just read was boring.",
@@ -1772,31 +1970,36 @@ const EXERCISES = [
       "El libro que acabé de leer era aburrido"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: It's harder than I thought.",
     "answer": "Es más difícil de lo que pensaba",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: There are more books than I can read.",
     "answer": "Hay más libros de los que puedo leer",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: My sister is taller than her boyfriend.",
     "answer": "Mi hermana es más alta que su novio",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I am as tired as you. (equality)",
     "answer": "Estoy tan cansado como tú",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: We have to hurry, the train is leaving.",
@@ -1805,31 +2008,36 @@ const EXERCISES = [
       "Tenemos que apresurarnos, el tren se va"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I get anxious when I have a lot of work.",
     "answer": "Me agobio cuando tengo mucho trabajo",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: He refused to help us.",
     "answer": "Se negó a ayudarnos",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I think it would be a good idea.",
     "answer": "Creo que sería una buena idea",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I don't believe it's a good idea.",
     "answer": "No creo que sea una buena idea",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: When I finish work, I'll call you.",
@@ -1838,7 +2046,8 @@ const EXERCISES = [
       "Cuando termine el trabajo te llamaré"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I hope your exam goes well.",
@@ -1847,19 +2056,22 @@ const EXERCISES = [
       "Espero que tu examen vaya bien"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: She asked me if I had time.",
     "answer": "Me preguntó si tenía tiempo",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: Apparently it's going to rain tomorrow.",
     "answer": "Por lo visto va a llover mañana",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: I exercise to stay healthy. (para)",
@@ -1869,19 +2081,22 @@ const EXERCISES = [
       "Hago deporte para mantenerme sano"
     ],
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: He did it for me (because of me).",
     "answer": "Lo hizo por mí",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Translate: This gift is for you (intended recipient).",
     "answer": "Este regalo es para ti",
     "topic": "English→Spanish",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Nunca leo ____ los mensajes de él ____ los mensajes de ella. (neither/nor)",
@@ -1891,91 +2106,104 @@ const EXERCISES = [
     ],
     "topic": "From Oriol's lessons",
     "hint": "ni... ni... = neither... nor...",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Están hablando con ____ amigos míos que quieren dinero. (several)",
     "answer": "varios",
     "topic": "From Oriol's lessons",
     "hint": "several = varios",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Habla sin saber ____ ____ dice. (what he says)",
     "answer": "lo que",
     "topic": "From Oriol's lessons",
     "hint": "what (relative) = lo que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "El reloj ____ es nuevo pero ____ está roto. (still / already)",
     "answer": "todavía, ya",
     "topic": "From Oriol's lessons",
     "hint": "todavía = still, ya = already",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Soluciono mis problemas ____ a mis amigos lo que piensan. (asking — gerund)",
     "answer": "preguntando",
     "topic": "From Oriol's lessons",
     "hint": "by + verb-ing = gerundio in Spanish",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Practicando frecuentemente vamos a mejorar nuestra ____. (writing — noun)",
     "answer": "escritura",
     "topic": "From Oriol's lessons",
     "hint": "writing as a noun",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "El artículo que ____ ____ leer es aburrido. (I just)",
     "answer": "acabo de",
     "topic": "From Oriol's lessons",
     "hint": "acabar de + infinitive = to have just",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "No voy a continuar ____. (reading — gerund)",
     "answer": "leyendo",
     "topic": "From Oriol's lessons",
     "hint": "continuar/seguir + gerundio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Tienes ____ caminar a tu izquierda y después tienes ____ girar a la derecha. (have to)",
     "answer": "que",
     "topic": "From Oriol's lessons",
     "hint": "tener QUE + infinitive",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Después necesitas caminar hasta el ____ de la calle. (end)",
     "answer": "final",
     "topic": "From Oriol's lessons",
     "hint": "end of the street = final",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "¿____ ____ (tiempo) nadas? (how often — preferred form)",
     "answer": "Cada cuánto",
     "topic": "From Oriol's lessons",
     "hint": "cada cuánto = how often",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Nado cada 2 días, día ____ y día ____. (every other day)",
     "answer": "sí, no",
     "topic": "From Oriol's lessons",
     "hint": "día sí y día no",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "La próxima vez = la semana ____ ____. (next week, alternate way)",
     "answer": "que viene",
     "topic": "From Oriol's lessons",
     "hint": "two ways to say next: próximo/que viene",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Es la primera vez que se celebró en una ciudad ____ ____ Madrid. (different from)",
@@ -1985,70 +2213,80 @@ const EXERCISES = [
     ],
     "topic": "From Oriol's lessons",
     "hint": "different from = diferente DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Cuando estaba ____ los deportes. (doing — gerund + pronoun)",
     "answer": "haciéndolos",
     "topic": "From Oriol's lessons",
     "hint": "gerund + clitic = haciendo+los",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Esta semana ____ ____ mucho trabajo. (I have had — present perfect)",
     "answer": "he tenido",
     "topic": "From Oriol's lessons",
     "hint": "present perfect = haber + participle",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-04-03"
   },
   {
     "prompt": "Tal vez compensa ir a Philly. (May be ____ ____)",
     "answer": "worth going",
     "topic": "From Oriol's lessons",
     "hint": "compensa = to be worth",
-    "type": "translate"
+    "type": "translate",
+    "lesson_date": "2026-03-11"
   },
   {
     "prompt": "Fue ____ rápido para mí. (too)",
     "answer": "demasiado",
     "topic": "From Oriol's lessons",
     "hint": "too = demasiado",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-11"
   },
   {
     "prompt": "____ habla español en Cuba. (somebody speaks — passive 'se')",
     "answer": "Se",
     "topic": "From Oriol's lessons",
     "hint": "passive se",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-04-06"
   },
   {
     "prompt": "____ sirve buen café en CafeU. (they serve / impersonal 'se')",
     "answer": "Se",
     "topic": "From Oriol's lessons",
     "hint": "impersonal se",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-04-06"
   },
   {
     "prompt": "Después / Antes ____ + reference point. (always with this preposition)",
     "answer": "de",
     "topic": "From Oriol's lessons",
     "hint": "after/before always take DE",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-04-01"
   },
   {
     "prompt": "Mi hermana es ____ alta ____ su novio. (taller than)",
     "answer": "más, que",
     "topic": "From Oriol's lessons",
     "hint": "más X que Y",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "Es más difícil ____ ____ ____ pensaba. (than I thought — clause comparison)",
     "answer": "de lo que",
     "topic": "From Oriol's lessons",
     "hint": "clause comparison = de lo que",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-10"
   },
   {
     "prompt": "He estudiado español ____ ____ tres años. (for three years — duration)",
@@ -2058,42 +2296,48 @@ const EXERCISES = [
     ],
     "topic": "From Oriol's lessons",
     "hint": "duration of time = durante",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Voy ____ Madrid el viernes. (motion toward)",
     "answer": "a",
     "topic": "From Oriol's lessons",
     "hint": "motion to a place = a",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Vivo ____ Washington. (location — preposition)",
     "answer": "en",
     "topic": "From Oriol's lessons",
     "hint": "location = en",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Camino ____ el parque por las mañanas. (through the park)",
     "answer": "por",
     "topic": "From Oriol's lessons",
     "hint": "through = por",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Estudio español ____ poder hablar con mi familia. (in order to)",
     "answer": "para",
     "topic": "From Oriol's lessons",
     "hint": "in order to = para",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "Gracias ____ tu ayuda. (thanks for)",
     "answer": "por",
     "topic": "From Oriol's lessons",
     "hint": "gracias POR",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-27"
   },
   {
     "prompt": "____ ____ (in my opinion / view), deberíamos cambiar el plan.",
@@ -2104,532 +2348,608 @@ const EXERCISES = [
     ],
     "topic": "From Oriol's lessons",
     "hint": "three ways to express opinion",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Yo ____ (hablar) con María ayer.",
     "answer": "hablé",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é (accent!)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (estudiar) toda la noche.",
     "answer": "estudié",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (reservar) una mesa en el restaurante.",
     "answer": "reservé",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é (this is the exact form Oriol corrected)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (cocinar) la cena anoche.",
     "answer": "cociné",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (caminar) cinco kilómetros.",
     "answer": "caminé",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (trabajar) doce horas el viernes.",
     "answer": "trabajé",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (despertarse) tarde ayer.",
     "answer": "me desperté",
     "topic": "Preterite — Regular",
     "hint": "reflexive -ar yo = me -é (Oriol corrected this exact one)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (escuchar) tu mensaje esta mañana.",
     "answer": "escuché",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (comer) en ese restaurante anoche.",
     "answer": "comí",
     "topic": "Preterite — Regular",
     "hint": "-er yo = -í",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (vivir) en España durante tres años.",
     "answer": "viví",
     "topic": "Preterite — Regular",
     "hint": "-ir yo = -í",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (volver) a casa a medianoche.",
     "answer": "volví",
     "topic": "Preterite — Regular",
     "hint": "volver is regular in preterite (Oriol corrected this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (escribir) tres cartas anoche.",
     "answer": "escribí",
     "topic": "Preterite — Regular",
     "hint": "-ir yo = -í",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (aprender) mucho ese año.",
     "answer": "aprendí",
     "topic": "Preterite — Regular",
     "hint": "-er yo = -í",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (decidir) cambiar de carrera.",
     "answer": "decidí",
     "topic": "Preterite — Regular",
     "hint": "-ir yo = -í",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Yo ____ (imaginar) que estabas enfermo.",
     "answer": "imaginé",
     "topic": "Preterite — Regular",
     "hint": "-ar yo = -é (Oriol used this exact verb)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Mi amiga me ____ (visitar) por poco tiempo. (Don't add an extra 'e'!)",
     "answer": "visitó",
     "topic": "Preterite — 3rd person",
     "hint": "-ar él/ella = -ó (Oriol corrected 'visitóe')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Mi amigo ____ (salir) a México.",
     "answer": "salió",
     "topic": "Preterite — 3rd person",
     "hint": "-ir él/ella = -ió (Oriol corrected this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Mis amigos me ____ (visitar) el fin de semana pasado.",
     "answer": "visitaron",
     "topic": "Preterite — 3rd person",
     "hint": "-ar ellos = -aron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Ella ____ (cocinar) una cena fantástica.",
     "answer": "cocinó",
     "topic": "Preterite — 3rd person",
     "hint": "-ar él/ella = -ó",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Los niños ____ (jugar) en el parque toda la tarde.",
     "answer": "jugaron",
     "topic": "Preterite — 3rd person",
     "hint": "-ar ellos = -aron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Mi padre ____ (decidir) jubilarse.",
     "answer": "decidió",
     "topic": "Preterite — 3rd person",
     "hint": "-ir él = -ió",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Mis abuelos ____ (vivir) en Argentina por 30 años.",
     "answer": "vivieron",
     "topic": "Preterite — 3rd person",
     "hint": "-ir ellos = -ieron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "El concierto ____ (terminar) a medianoche.",
     "answer": "terminó",
     "topic": "Preterite — 3rd person",
     "hint": "-ar él = -ó",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Los estudiantes ____ (aprobar) el examen.",
     "answer": "aprobaron",
     "topic": "Preterite — 3rd person",
     "hint": "-ar ellos = -aron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "El avión ____ (aterrizar) a las nueve.",
     "answer": "aterrizó",
     "topic": "Preterite — 3rd person",
     "hint": "-ar él = -ó",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-04"
   },
   {
     "prompt": "Ayer ____ (tener, yo) un día tranquilo.",
     "answer": "tuve",
     "topic": "Preterite — Irregular",
     "hint": "tener → tuv- (no accent! 'tuve')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Mi día ____ (tener) un ritmo lento.",
     "answer": "tuvo",
     "topic": "Preterite — Irregular",
     "hint": "tener él/ella = tuvo (Oriol used this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ellos ____ (tener) mucho que hacer.",
     "answer": "tuvieron",
     "topic": "Preterite — Irregular",
     "hint": "tener ellos = tuvieron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Nosotros ____ (tener) suerte en el viaje.",
     "answer": "tuvimos",
     "topic": "Preterite — Irregular",
     "hint": "tener nosotros = tuvimos",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ayer ____ (estar, yo) en casa todo el día.",
     "answer": "estuve",
     "topic": "Preterite — Irregular",
     "hint": "estar → estuv-",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Mi madre ____ (estar) enferma la semana pasada.",
     "answer": "estuvo",
     "topic": "Preterite — Irregular",
     "hint": "estar él/ella = estuvo",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ayer ____ (ir, yo) al cine.",
     "answer": "fui",
     "topic": "Preterite — Irregular",
     "hint": "ir yo = fui (same as ser yo!)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "La cena ____ (ser) deliciosa.",
     "answer": "fue",
     "topic": "Preterite — Irregular",
     "hint": "ser él = fue",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "____ (ser, ellos) los mejores cocteles que he probado.",
     "answer": "Fueron",
     "topic": "Preterite — Irregular",
     "hint": "ser ellos = fueron (Oriol kept this in 'fueron fantásticos')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Mis padres ____ (ir) a Italia el verano pasado.",
     "answer": "fueron",
     "topic": "Preterite — Irregular",
     "hint": "ir ellos = fueron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Nosotros ____ (ir) a algunos bares después.",
     "answer": "fuimos",
     "topic": "Preterite — Irregular",
     "hint": "ir nosotros = fuimos (Oriol used this exact form)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (decir) la verdad.",
     "answer": "dije",
     "topic": "Preterite — Irregular",
     "hint": "decir yo = dije",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella me ____ (decir) que vendría.",
     "answer": "dijo",
     "topic": "Preterite — Irregular",
     "hint": "decir él/ella = dijo (Oriol used 'me dijo')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ellos no ____ (decir) nada.",
     "answer": "dijeron",
     "topic": "Preterite — Irregular",
     "hint": "decir ellos = dijeron (note: NOT 'dijieron')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (hacer) la tarea anoche.",
     "answer": "hice",
     "topic": "Preterite — Irregular",
     "hint": "hacer yo = hice",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Mi hermano ____ (hacer) una fiesta el sábado.",
     "answer": "hizo",
     "topic": "Preterite — Irregular",
     "hint": "hacer él/ella = hizo (z not c!)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo no ____ (poder) terminar el trabajo a tiempo.",
     "answer": "pude",
     "topic": "Preterite — Irregular",
     "hint": "poder yo = pude",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella ____ (poder) resolver el problema.",
     "answer": "pudo",
     "topic": "Preterite — Irregular",
     "hint": "poder él/ella = pudo",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo no ____ (querer) ir a la fiesta.",
     "answer": "quise",
     "topic": "Preterite — Irregular",
     "hint": "querer yo = quise (Oriol corrected this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ni ____ (querer, yo) tener prisa.",
     "answer": "quise",
     "topic": "Preterite — Irregular",
     "hint": "querer yo = quise (exact form from your lesson)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella ____ (querer) ayudarme.",
     "answer": "quiso",
     "topic": "Preterite — Irregular",
     "hint": "querer él/ella = quiso",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (poner) las llaves en la mesa.",
     "answer": "puse",
     "topic": "Preterite — Irregular",
     "hint": "poner yo = puse",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Él ____ (poner) la música muy alta.",
     "answer": "puso",
     "topic": "Preterite — Irregular",
     "hint": "poner él = puso",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (saber) la noticia esta mañana.",
     "answer": "supe",
     "topic": "Preterite — Irregular",
     "hint": "saber yo = supe (means 'I found out')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "El camarero no ____ (saber) qué decirme.",
     "answer": "supo",
     "topic": "Preterite — Irregular",
     "hint": "saber él/ella = supo (means 'didn't know to')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (venir) en metro.",
     "answer": "vine",
     "topic": "Preterite — Irregular",
     "hint": "venir yo = vine",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Mi amiga ____ (venir) a la fiesta.",
     "answer": "vino",
     "topic": "Preterite — Irregular",
     "hint": "venir él/ella = vino",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (traer) una botella de vino.",
     "answer": "traje",
     "topic": "Preterite — Irregular",
     "hint": "traer yo = traje",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella ____ (traer) los regalos.",
     "answer": "trajo",
     "topic": "Preterite — Irregular",
     "hint": "traer él/ella = trajo",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (ver) la película anoche.",
     "answer": "vi",
     "topic": "Preterite — Irregular",
     "hint": "ver yo = vi (NO accent on this one!)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "____ (ver, yo) que llevabas bufanda y supe que estabas enfermo.",
     "answer": "Vi",
     "topic": "Preterite — Irregular",
     "hint": "ver yo = vi (from your lesson)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella nos ____ (ver) en el café.",
     "answer": "vio",
     "topic": "Preterite — Irregular",
     "hint": "ver él/ella = vio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo le ____ (dar) un regalo.",
     "answer": "di",
     "topic": "Preterite — Irregular",
     "hint": "dar yo = di (NO accent!)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Ella me ____ (dar) las gracias.",
     "answer": "dio",
     "topic": "Preterite — Irregular",
     "hint": "dar él/ella = dio",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-09"
   },
   {
     "prompt": "Yo ____ (buscar) el restaurante por todas partes.",
     "answer": "busqué",
     "topic": "Preterite — Spelling",
     "hint": "-car → -qué (c→qu before é)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (llegar) a las nueve.",
     "answer": "llegué",
     "topic": "Preterite — Spelling",
     "hint": "-gar → -gué (g→gu before é)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (empezar) a estudiar a las ocho.",
     "answer": "empecé",
     "topic": "Preterite — Spelling",
     "hint": "-zar → -cé (z→c before é)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (sacar) muchas fotos.",
     "answer": "saqué",
     "topic": "Preterite — Spelling",
     "hint": "-car → -qué",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (pagar) la cuenta con tarjeta.",
     "answer": "pagué",
     "topic": "Preterite — Spelling",
     "hint": "-gar → -gué",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (cruzar) la calle con cuidado.",
     "answer": "crucé",
     "topic": "Preterite — Spelling",
     "hint": "-zar → -cé",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (jugar) al fútbol ayer.",
     "answer": "jugué",
     "topic": "Preterite — Spelling",
     "hint": "-gar → -gué",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Él me ____ (pedir) la cuenta. (3rd person stem change!)",
     "answer": "pidió",
     "topic": "Preterite — Spelling",
     "hint": "pedir 3rd: e→i (pidió, pidieron)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Ellos ____ (pedir) la comida para compartir.",
     "answer": "pidieron",
     "topic": "Preterite — Spelling",
     "hint": "pedir ellos: e→i = pidieron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Ella ____ (dormir) ocho horas.",
     "answer": "durmió",
     "topic": "Preterite — Spelling",
     "hint": "dormir 3rd: o→u (durmió, durmieron)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Ellos ____ (servir) un café excelente.",
     "answer": "sirvieron",
     "topic": "Preterite — Spelling",
     "hint": "servir ellos: e→i = sirvieron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Mi abuelo ____ (morir) hace dos años.",
     "answer": "murió",
     "topic": "Preterite — Spelling",
     "hint": "morir 3rd: o→u = murió",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "El camarero ____ (servir) los platos rápidamente.",
     "answer": "sirvió",
     "topic": "Preterite — Spelling",
     "hint": "servir 3rd: e→i = sirvió",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Yo ____ (creer) que era verdad.",
     "answer": "creí",
     "topic": "Preterite — Spelling",
     "hint": "creer yo = creí",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Ella ____ (leer) tres libros en vacaciones.",
     "answer": "leyó",
     "topic": "Preterite — Spelling",
     "hint": "leer 3rd: i→y = leyó",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "Ellos ____ (leer) las noticias por la mañana.",
     "answer": "leyeron",
     "topic": "Preterite — Spelling",
     "hint": "leer ellos: -yeron",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-06"
   },
   {
     "prompt": "La salsa ____ (ser/estar — pick tense too) muy buena. (use ser, describe a quality)",
@@ -2639,7 +2959,8 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "description in past = imperfect 'era'; 'fue' for a specific completed evaluation",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Los cocteles ____ (ser) fantásticos. (Oriol said both work; use the imperfect 'description' form)",
@@ -2649,7 +2970,8 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "both accepted; imperfect for description",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Los platos ____ (ser) deliciosos. (description of how they were)",
@@ -2659,7 +2981,8 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "both work; imperfect describes the dish",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "El bistec ____ (ser) buenísimo. (describing what it was like)",
@@ -2669,14 +2992,16 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "imperfect = description",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "El día ____ (tener) un ritmo lento. (preterite for a completed day)",
     "answer": "tuvo",
     "topic": "Preterite vs Imperfect",
     "hint": "preterite because the day is over (your phrasing)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Yo ya ____ (saber/imaginar) que estabas enfermo. (preterite of imaginar = 'I imagined it then')",
@@ -2686,42 +3011,48 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "preterite imaginé = at that moment; imperfect sabía = ongoing knowing",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Te ____ (ver) con bufanda y supe que estabas enfermo.",
     "answer": "vi",
     "topic": "Preterite vs Imperfect",
     "hint": "completed observation = preterite vi",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Cuando era niño, ____ (jugar, yo) al fútbol todos los días. (habitual past)",
     "answer": "jugaba",
     "topic": "Preterite vs Imperfect",
     "hint": "habitual = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Ayer ____ (jugar, yo) un partido contra mi vecino. (one specific game)",
     "answer": "jugué",
     "topic": "Preterite vs Imperfect",
     "hint": "one specific event = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Mientras ____ (yo, leer), sonó el teléfono. (background = imperfect; sudden = preterite)",
     "answer": "leía",
     "topic": "Preterite vs Imperfect",
     "hint": "background action = imperfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Ayer me ____ (despertar) más tarde de lo que me despierto usualmente.",
     "answer": "desperté",
     "topic": "Preterite vs Imperfect",
     "hint": "yesterday = specific = preterite (your exact sentence)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Anoche el restaurante ____ (estar) lleno.",
@@ -2731,133 +3062,152 @@ const EXERCISES = [
     ],
     "topic": "Preterite vs Imperfect",
     "hint": "description of the state of the restaurant",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Conocí a mi esposa en 2010. (Preterite of conocer = 'met for the first time') Ya la ____ (conocer) cuando era niña. (Imperfect = 'used to know')",
     "answer": "conocía",
     "topic": "Preterite vs Imperfect",
     "hint": "conocer imperfect = used to know; preterite = met",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Esta semana ____ (tener) mucho trabajo. (this week — use present perfect because 'this week' is still ongoing)",
     "answer": "he tenido",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "esta semana = present perfect (Oriol marked this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Ayer ____ (tener, yo) mucho trabajo. (yesterday = past finished = preterite)",
     "answer": "tuve",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "ayer = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Hoy ____ (ver, yo) a tres amigos. (today is still happening = present perfect)",
     "answer": "he visto",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "hoy = present perfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "El año pasado ____ (ver, yo) la película tres veces.",
     "answer": "vi",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "el año pasado = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Este mes ____ (ir, yo) al gimnasio diez veces.",
     "answer": "he ido",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "este mes = present perfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "En 2020 ____ (ir, yo) a España por primera vez.",
     "answer": "fui",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "specific year = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Te ____ (escribir) tres veces esta semana — ¿no leíste mis mensajes?",
     "answer": "he escrito",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "esta semana = present perfect",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "Anoche ____ (escribir) un email al cliente.",
     "answer": "escribí",
     "topic": "Preterite vs Pres. Perfect",
     "hint": "anoche = preterite",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-26"
   },
   {
     "prompt": "____ día tuvo un ritmo lento. (Oriol corrected your 'La' here)",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "día is masculine despite ending in -a!",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ mano izquierda. (mano ends in -o but is feminine)",
     "answer": "La",
     "topic": "Articles — Gender",
     "hint": "mano is feminine despite ending in -o",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ problema es complicado.",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "problema = masculine (-ma words from Greek)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ tema de la conversación fue interesante.",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "tema = masculine (-ma)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ programa empieza a las ocho.",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "programa = masculine (-ma)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ sistema funciona bien.",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "sistema = masculine",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ foto está borrosa.",
     "answer": "La",
     "topic": "Articles — Gender",
     "hint": "foto = feminine (short for fotografía)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ moto es nueva.",
     "answer": "La",
     "topic": "Articles — Gender",
     "hint": "moto = feminine (short for motocicleta)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "____ agua está fría. (singular feminine 'la' uses 'el' before stressed a-)",
     "answer": "El",
     "topic": "Articles — Gender",
     "hint": "agua: feminine but uses 'el' (stressed á)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Esta es ____ agua fría. (with demonstrative, normal gender returns)",
@@ -2867,217 +3217,248 @@ const EXERCISES = [
     ],
     "topic": "Articles — Gender",
     "hint": "with demonstratives/adjectives before, can return to feminine",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-16"
   },
   {
     "prompt": "Yo soy ____ economista. (Oriol crossed out the article here)",
     "answer": "",
     "topic": "Articles — Profession",
     "hint": "NO article: profession after ser, no qualifier = no article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Mi padre es ____ médico.",
     "answer": "",
     "topic": "Articles — Profession",
     "hint": "NO article: profession bare",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Soy ____ buen economista. (qualifier 'buen' = bring back the article)",
     "answer": "un",
     "topic": "Articles — Profession",
     "hint": "WITH qualifier (buen) = use 'un' (Oriol kept this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Soy ____ mal estudiante.",
     "answer": "un",
     "topic": "Articles — Profession",
     "hint": "WITH qualifier (mal) = use article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Ella es ____ profesora de matemáticas.",
     "answer": "",
     "topic": "Articles — Profession",
     "hint": "profession bare = no article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Es ____ excelente profesora.",
     "answer": "una",
     "topic": "Articles — Profession",
     "hint": "qualifier 'excelente' = use article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Almodóvar es ____ pionero del cine español.",
     "answer": "un",
     "topic": "Articles — Profession",
     "hint": "with qualifier 'del cine' = use article (Oriol's lesson)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Me voy allí ____ 20 de abril.",
     "answer": "el",
     "topic": "Articles — Dates",
     "hint": "dates take 'el' (Oriol corrected this exact thing)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "____ lunes voy al médico.",
     "answer": "El",
     "topic": "Articles — Dates",
     "hint": "days of week take 'el'",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Estudio español ____ martes y jueves.",
     "answer": "los",
     "topic": "Articles — Dates",
     "hint": "plural days = 'los'",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Nací ____ 15 de marzo de 1990.",
     "answer": "el",
     "topic": "Articles — Dates",
     "hint": "dates = el",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Llegamos a las ocho de ____ mañana.",
     "answer": "la",
     "topic": "Articles — Dates",
     "hint": "de la mañana / de la tarde / de la noche",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Trabajo en ____ FMI.",
     "answer": "el",
     "topic": "Articles — Institutions",
     "hint": "institutions take 'el' (Oriol's lesson)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Estudié en ____ universidad de Maryland.",
     "answer": "la",
     "topic": "Articles — Institutions",
     "hint": "la universidad de X",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "____ país que estoy cubriendo es República Dominicana.",
     "answer": "El",
     "topic": "Articles — Institutions",
     "hint": "país (masculine) = el",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Voy a ____ hospital.",
     "answer": "el",
     "topic": "Articles — Institutions",
     "hint": "hospital (masc.) = el",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Trabajo para ____ Banco Mundial.",
     "answer": "el",
     "topic": "Articles — Institutions",
     "hint": "el Banco Mundial",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Una ensalada ____ restaurante. (de + el contracts)",
     "answer": "del",
     "topic": "Articles — Contractions",
     "hint": "de + el = del",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Vengo ____ trabajo.",
     "answer": "del",
     "topic": "Articles — Contractions",
     "hint": "de + el = del",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Voy ____ cine. (a + el contracts)",
     "answer": "al",
     "topic": "Articles — Contractions",
     "hint": "a + el = al",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Vengo ____ casa de mi madre. (no contraction with feminine)",
     "answer": "de la",
     "topic": "Articles — Contractions",
     "hint": "de la (NOT 'dela')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "La salsa ____ pasta. (de + la = de la, no contraction)",
     "answer": "de la",
     "topic": "Articles — Contractions",
     "hint": "de la (feminine, no contraction)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "Las páginas ____ libros. (plural)",
     "answer": "de los",
     "topic": "Articles — Contractions",
     "hint": "de los (NOT 'delos')",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-02-25"
   },
   {
     "prompt": "____ que más me gusta es el chocolate. ('the thing that...')",
     "answer": "Lo",
     "topic": "Articles — Lo",
     "hint": "lo que = the thing that",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "____ importante es estudiar todos los días. ('the important thing')",
     "answer": "Lo",
     "topic": "Articles — Lo",
     "hint": "lo + adjective = the X thing",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "____ mejor de España es la comida.",
     "answer": "Lo",
     "topic": "Articles — Lo",
     "hint": "lo mejor = the best thing",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "No ____ entendieron. ('didn't understand it' — direct object pronoun)",
     "answer": "lo",
     "topic": "Articles — Lo",
     "hint": "lo = direct object 'it' (Oriol's lesson)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Se ____ ____ a María. ('I give them to her' — pronoun cluster)",
     "answer": "las doy",
     "topic": "Articles — Lo",
     "hint": "se las doy (Oriol used this)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-05-13"
   },
   {
     "prompt": "Me gusta ____ café. (general preference = USE the article)",
     "answer": "el",
     "topic": "Articles — When to use",
     "hint": "general preferences with gustar take definite article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Tengo ____ hambre. (no article with tener + abstract noun)",
     "answer": "",
     "topic": "Articles — When to use",
     "hint": "tener hambre/sed/sueño = no article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "¿Hay ____ café? (general question = no article)",
@@ -3087,21 +3468,24 @@ const EXERCISES = [
     ],
     "topic": "Articles — When to use",
     "hint": "either: no article (any) or 'un' (a specific cup)",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "Tengo ____ casa nueva. ('una' marks 'a new house')",
     "answer": "una",
     "topic": "Articles — When to use",
     "hint": "una = a/an",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   },
   {
     "prompt": "En España, ____ tortilla es muy típica. (generic 'the' for category)",
     "answer": "la",
     "topic": "Articles — When to use",
     "hint": "general/categorical = definite article",
-    "type": "fill"
+    "type": "fill",
+    "lesson_date": "2026-03-20"
   }
 ];
 const STORAGE_KEY = "spanish_vocab_v4";
@@ -3112,6 +3496,8 @@ function defaultState(){
     direction:"es-en", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
     activeTab:"vocab",
     accent:"es-ES", autoSpeak:"on",
+    exerOrder:"lesson",   // "lesson" | "smart" | "random"
+    exerCursor:0,         // index into the ordered pool for "lesson" mode
     currentKey:null, currentDir:"es-en", showingBack:false,
     currentExerIdx:null,
     totalCorrect:0, totalWrong:0, streak:0,
@@ -3445,17 +3831,55 @@ function extractSpanishFromPrompt(prompt){
   return s;
 }
 
+// Format a lesson_date like "2026-03-16" → "16 mar"
+const MONTHS_ES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+function fmtLessonDate(d){
+  if(!d || typeof d !== "string") return "";
+  const m = d.match(/^\d{4}-(\d{2})-(\d{2})$/);
+  if(!m) return "";
+  return parseInt(m[2],10) + " " + MONTHS_ES[parseInt(m[1],10)-1];
+}
+
 function exerNext(){
   const pool = getExercisePool();
   if(pool.length === 0){ $("#exer-prompt").textContent = "No exercises in this topic."; return; }
-  // Prefer unseen, then random
-  const unseen = pool.filter(e => !state.exerProgress[e._idx]);
-  const wrong = pool.filter(e => state.exerProgress[e._idx] === "wrong");
-  let candidates = unseen.length ? unseen : (wrong.length ? wrong.concat(pool) : pool);
-  if(state.currentExerIdx !== null && candidates.length > 1) candidates = candidates.filter(e => e._idx !== state.currentExerIdx);
-  const ex = candidates[Math.floor(Math.random() * candidates.length)];
+  let ex;
+  if(state.exerOrder === "lesson"){
+    // Sort the pool by lesson_date ascending (oldest first), then by original index for stable order.
+    const ordered = pool.slice().sort((a,b) => {
+      const da = a.lesson_date || "9999-12-31";
+      const db = b.lesson_date || "9999-12-31";
+      if(da < db) return -1;
+      if(da > db) return 1;
+      return a._idx - b._idx;
+    });
+    // Find current index in the ordered list and advance one
+    let cursor = 0;
+    if(state.currentExerIdx !== null){
+      const pos = ordered.findIndex(e => e._idx === state.currentExerIdx);
+      cursor = (pos >= 0 ? pos + 1 : 0);
+    } else {
+      // Resume from saved cursor if it's valid
+      cursor = Math.min(state.exerCursor || 0, ordered.length - 1);
+    }
+    if(cursor >= ordered.length) cursor = 0;  // wrap
+    ex = ordered[cursor];
+    state.exerCursor = cursor;
+  } else if(state.exerOrder === "smart"){
+    const unseen = pool.filter(e => !state.exerProgress[e._idx]);
+    const wrong = pool.filter(e => state.exerProgress[e._idx] === "wrong");
+    let candidates = unseen.length ? unseen : (wrong.length ? wrong.concat(pool) : pool);
+    if(state.currentExerIdx !== null && candidates.length > 1) candidates = candidates.filter(e => e._idx !== state.currentExerIdx);
+    ex = candidates[Math.floor(Math.random() * candidates.length)];
+  } else { // random
+    let candidates = pool;
+    if(state.currentExerIdx !== null && candidates.length > 1) candidates = candidates.filter(e => e._idx !== state.currentExerIdx);
+    ex = candidates[Math.floor(Math.random() * candidates.length)];
+  }
   state.currentExerIdx = ex._idx;
   $("#exer-topic").textContent = ex.topic;
+  const ld = fmtLessonDate(ex.lesson_date);
+  $("#exer-lesson-date").textContent = ld ? "Lesson · " + ld : "";
   $("#exer-prompt").textContent = ex.prompt;
   $("#exer-input").value = "";
   $("#exer-input").disabled = false;
@@ -3545,12 +3969,19 @@ const amodeGroup = $("#answer-mode-group");
 const filterGroup = $("#filter-group");
 const accentGroup = $("#accent-group");
 const autospeakGroup = $("#autospeak-group");
+const exerOrderGroup = $("#exer-order-group");
 dirGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.direction = b.dataset.dir; setActive(dirGroup, state.direction, "dir"); saveState(); next(); }));
 modeGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.mode = b.dataset.mode; setActive(modeGroup, state.mode, "mode"); saveState(); next(); }));
 amodeGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.answerMode = b.dataset.amode; setActive(amodeGroup, state.answerMode, "amode"); saveState(); applyAnswerModeUI(); next(); }));
 filterGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.filter = b.dataset.filter; setActive(filterGroup, state.filter, "filter"); saveState(); next(); }));
 accentGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.accent = b.dataset.acc; setActive(accentGroup, state.accent, "acc"); saveState(); }));
 autospeakGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.autoSpeak = b.dataset.as; setActive(autospeakGroup, state.autoSpeak, "as"); saveState(); }));
+exerOrderGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
+  state.exerOrder = b.dataset.eo; setActive(exerOrderGroup, state.exerOrder, "eo");
+  state.exerCursor = 0; state.currentExerIdx = null;
+  saveState();
+  if(state.activeTab === "exer") exerNext();
+}));
 
 $("#reset-btn").addEventListener("click", () => {
   if(confirm("Reset all progress? Your added words stay.")){
@@ -3630,6 +4061,7 @@ setActive(amodeGroup, state.answerMode, "amode");
 setActive(filterGroup, state.filter, "filter");
 setActive(accentGroup, state.accent, "acc");
 setActive(autospeakGroup, state.autoSpeak, "as");
+setActive(exerOrderGroup, state.exerOrder, "eo");
 applyAnswerModeUI();
 applyTabUI();
 rebuildVocab();
