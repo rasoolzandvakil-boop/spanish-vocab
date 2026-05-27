@@ -60,11 +60,14 @@
   .card-rank{position:absolute; bottom:12px; right:18px; font-size:10px; color:var(--muted); opacity:0.7;}
   .card-text{font-size:clamp(22px, 6vw, 34px); font-weight:600; line-height:1.25; color:var(--ink); max-width:100%; word-break:break-word;}
   .card-face.back .card-text{font-weight:500; color:#3a302d;}
-  /* Speaker button on the card */
-  .speak-btn{position:absolute; bottom:38px; left:50%; transform:translateX(-50%); width:46px; height:46px; border:none; border-radius:50%; background:rgba(196,77,60,0.10); color:var(--accent); font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s, transform 0.1s;}
-  .speak-btn:active{transform:translateX(-50%) scale(0.92);}
+  /* Speaker buttons on the card: side-by-side ES + MX */
+  .speak-row{position:absolute; bottom:38px; left:50%; transform:translateX(-50%); display:flex; gap:10px;}
+  .speak-row[hidden]{display:none;}
+  .speak-btn{width:46px; height:46px; border:none; border-radius:50%; background:rgba(196,77,60,0.10); color:var(--accent); font-size:14px; font-weight:700; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:background 0.15s, transform 0.1s; line-height:1; padding:0;}
+  .speak-btn:active{transform:scale(0.92);}
   .speak-btn.playing{background:var(--accent); color:white; animation:pulse 0.6s ease infinite alternate;}
-  .speak-btn[hidden]{display:none;}
+  .speak-btn .spk-icon{font-size:14px; margin-bottom:2px;}
+  .speak-btn .spk-lbl{font-size:9px; letter-spacing:0.5px;}
   @keyframes pulse{from{box-shadow:0 0 0 0 rgba(196,77,60,0.4);} to{box-shadow:0 0 0 8px rgba(196,77,60,0);}}
   .tap-hint{font-size:12px; color:var(--muted); margin-top:4px; opacity:0.7; transition:opacity 0.3s; letter-spacing:0.3px;}
   .card.flipped + .tap-hint{opacity:0;}
@@ -170,7 +173,10 @@
           <div class="card-lang" id="front-lang">ESPAÑOL</div>
           <div class="card-box" id="front-box"></div>
           <div class="card-text" id="front-text">…</div>
-          <button class="speak-btn" id="front-speak" aria-label="Pronounce">🔊</button>
+          <div class="speak-row" id="front-speak-row">
+            <button class="speak-btn" data-face="front" data-acc="es-ES" aria-label="Pronounce (Spain)"><span class="spk-icon">🔊</span><span class="spk-lbl">ES</span></button>
+            <button class="speak-btn" data-face="front" data-acc="es-MX" aria-label="Pronounce (Mexico)"><span class="spk-icon">🔊</span><span class="spk-lbl">MX</span></button>
+          </div>
           <div class="card-source" id="front-source"></div>
           <div class="card-rank" id="front-rank"></div>
         </div>
@@ -178,13 +184,16 @@
           <div class="card-lang" id="back-lang">ENGLISH</div>
           <div class="card-box" id="back-box"></div>
           <div class="card-text" id="back-text">…</div>
-          <button class="speak-btn" id="back-speak" aria-label="Pronounce">🔊</button>
+          <div class="speak-row" id="back-speak-row">
+            <button class="speak-btn" data-face="back" data-acc="es-ES" aria-label="Pronounce (Spain)"><span class="spk-icon">🔊</span><span class="spk-lbl">ES</span></button>
+            <button class="speak-btn" data-face="back" data-acc="es-MX" aria-label="Pronounce (Mexico)"><span class="spk-icon">🔊</span><span class="spk-lbl">MX</span></button>
+          </div>
           <div class="card-source" id="back-source"></div>
           <div class="card-rank" id="back-rank"></div>
         </div>
       </div>
     </div>
-    <div class="tap-hint" id="tap-hint">Tap card to flip · 🔊 to hear it</div>
+    <div class="tap-hint" id="tap-hint">Tap card to flip · 🔊ES / 🔊MX to hear it</div>
     <div class="type-area" id="type-area">
       <div class="type-row">
         <input type="text" class="type-input" id="type-input" placeholder="Type the translation…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
@@ -254,13 +263,30 @@
       </div>
     </div>
     <div class="modal-section">
-      <div class="modal-label">Pronunciation accent</div>
+      <div class="modal-label">Default accent (used for auto-speak)</div>
       <div class="seg-group" id="accent-group">
         <button class="seg" data-acc="es-ES">Spain</button>
         <button class="seg" data-acc="es-MX">Mexico</button>
         <button class="seg" data-acc="es-419">Latin America</button>
       </div>
-      <div class="exer-hint" style="display:block; margin-top:6px;">If your phone doesn't have the chosen voice, it falls back to any Spanish voice.</div>
+      <div class="exer-hint" style="display:block; margin-top:6px;">Both Spain and Mexico are always accessible via the 🔊ES / 🔊MX buttons on each card.</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Voice — Spain (🔊ES)</div>
+      <select id="voice-es-select"></select>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Voice — Mexico (🔊MX)</div>
+      <select id="voice-mx-select"></select>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Speech speed</div>
+      <div class="seg-group" id="rate-group">
+        <button class="seg" data-rate="0.7">Slow</button>
+        <button class="seg" data-rate="0.85">Normal</button>
+        <button class="seg" data-rate="1.0">Fast</button>
+      </div>
+      <div class="exer-hint" style="display:block; margin-top:6px;">For a more natural sound: iOS Settings → Accessibility → Spoken Content → Voices → Spanish → tap a voice to download its "Enhanced" or "Premium" version. The app will pick the best available automatically.</div>
     </div>
     <div class="modal-section">
       <div class="modal-label">Auto-speak Spanish on flip</div>
@@ -3496,6 +3522,8 @@ function defaultState(){
     direction:"es-en", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
     activeTab:"vocab",
     accent:"es-ES", autoSpeak:"on",
+    voiceES:"", voiceMX:"",   // explicit voice names for each accent ("" = auto-pick best)
+    speechRate:0.85,
     exerOrder:"lesson",   // "lesson" | "smart" | "random"
     exerCursor:0,         // index into the ordered pool for "lesson" mode
     currentKey:null, currentDir:"es-en", showingBack:false,
@@ -3592,26 +3620,51 @@ if(window.speechSynthesis){
   setTimeout(loadVoices, 200);
   setTimeout(loadVoices, 1000);
 }
+
+// Score a voice by how "natural" it likely sounds.
+// iOS Enhanced/Premium and "Mejorada" variants score higher.
+// "Compact" / "Eloquence" / "Microsoft" basic variants score lower.
+function qualityScore(v){
+  const n = (v.name || "").toLowerCase();
+  let s = 0;
+  if(n.includes("premium") || n.includes("enhanced") || n.includes("mejorada") || n.includes("siri")) s += 100;
+  if(n.includes("neural") || n.includes("natural")) s += 80;
+  if(n.includes("google")) s += 30;  // Google voices on Chrome are decent
+  if(n.includes("eloquence") || n.includes("compact")) s -= 50;
+  if(v.localService) s += 5; // local voices = lower latency, usually iOS native
+  return s;
+}
+
+// Pick the best voice for a given accent ("es-ES" or "es-MX").
+// Honor explicit user choice first (state.voiceES / state.voiceMX), then fall back to quality scoring.
 function pickVoice(lang){
   if(!availableVoices.length) loadVoices();
-  // Exact match
-  let v = availableVoices.find(x => x.lang === lang);
-  if(v) return v;
-  // Same primary language
-  const primary = lang.split("-")[0];
-  v = availableVoices.find(x => x.lang.startsWith(primary + "-"));
-  if(v) return v;
-  v = availableVoices.find(x => x.lang.startsWith(primary));
-  return v || null;
+  // 1) Explicit user choice for this accent
+  const explicit = lang === "es-MX" ? state.voiceMX : state.voiceES;
+  if(explicit){
+    const found = availableVoices.find(v => v.name === explicit);
+    if(found) return found;
+  }
+  // 2) All voices matching the exact accent, sorted by quality
+  let matches = availableVoices.filter(v => v.lang === lang);
+  if(!matches.length){
+    // 3) Match by primary lang (Spanish) — better than nothing
+    matches = availableVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("es"));
+  }
+  if(!matches.length) return null;
+  matches.sort((a,b) => qualityScore(b) - qualityScore(a));
+  return matches[0];
 }
-function speakSpanish(text, btn){
+
+function speakSpanish(text, btn, accent){
   if(!text || !window.speechSynthesis) return;
-  // If currently speaking the same, cancel and stop (toggle)
   try { window.speechSynthesis.cancel(); } catch {}
+  const targetLang = accent || state.accent || "es-ES";
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = state.accent || "es-ES";
-  u.rate = 0.9;
-  const voice = pickVoice(u.lang);
+  u.lang = targetLang;
+  u.rate = state.speechRate || 0.85;
+  u.pitch = 1.0;
+  const voice = pickVoice(targetLang);
   if(voice){ u.voice = voice; u.lang = voice.lang; }
   if(btn){
     btn.classList.add("playing");
@@ -3628,13 +3681,12 @@ function applyTabUI(){
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
 }
 
-// Hide speaker on the side that is English; show it on the Spanish side
+// Hide speaker row on the English side; show it on the Spanish side.
 function updateSpeakButtons(){
   const dir = state.currentDir;
-  // Front side is Spanish if dir === "es-en"
   const frontIsSpanish = dir === "es-en";
-  $("#front-speak").hidden = !frontIsSpanish;
-  $("#back-speak").hidden = frontIsSpanish; // back is Spanish in en-es
+  $("#front-speak-row").hidden = !frontIsSpanish;
+  $("#back-speak-row").hidden = frontIsSpanish;
 }
 
 let awaitingNext = false;
@@ -3699,16 +3751,16 @@ function updateStats(){
 function flip(){
   state.showingBack = !state.showingBack;
   card.classList.toggle("flipped", state.showingBack);
-  // Auto-speak Spanish when it becomes visible
+  // Auto-speak Spanish when it becomes visible, using the default accent
   if(state.autoSpeak === "on"){
     const v = VOCAB_BY_KEY.get(state.currentKey);
     if(v){
       const dir = state.currentDir;
       const showingSpanish = state.showingBack ? (dir === "en-es") : (dir === "es-en");
       if(showingSpanish){
-        const btn = state.showingBack ? $("#back-speak") : $("#front-speak");
-        // Wait briefly so flip animation is mid-way
-        setTimeout(() => speakSpanish(v.es, btn), 200);
+        const sel = `#${state.showingBack ? 'back' : 'front'}-speak-row [data-acc="${state.accent || 'es-ES'}"]`;
+        const btn = document.querySelector(sel);
+        setTimeout(() => speakSpanish(v.es, btn, state.accent), 200);
       }
     }
   }
@@ -3774,27 +3826,30 @@ function handleTypeCheck(){
 typeCheckBtn.addEventListener("click", handleTypeCheck);
 typeInput.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); handleTypeCheck(); } });
 
-// Speaker button clicks
-$("#front-speak").addEventListener("click", e => {
-  e.stopPropagation();
-  const v = VOCAB_BY_KEY.get(state.currentKey);
-  if(v) speakSpanish(state.currentDir === "es-en" ? v.es : v.en, e.currentTarget);
-});
-$("#back-speak").addEventListener("click", e => {
-  e.stopPropagation();
-  const v = VOCAB_BY_KEY.get(state.currentKey);
-  if(v) speakSpanish(state.currentDir === "es-en" ? v.en : v.es, e.currentTarget);
+// Speaker button clicks: delegate to .speak-btn anywhere on the card.
+// Each button declares its accent via data-acc ("es-ES" / "es-MX").
+document.querySelectorAll(".speak-row").forEach(row => {
+  row.addEventListener("click", e => {
+    const btn = e.target.closest(".speak-btn");
+    if(!btn) return;
+    e.stopPropagation();
+    const v = VOCAB_BY_KEY.get(state.currentKey);
+    if(!v) return;
+    // The Spanish text we want to speak (on either side)
+    const spanishText = state.currentDir === "es-en" ? v.es : v.es;
+    speakSpanish(spanishText, btn, btn.dataset.acc);
+  });
 });
 
 cardWrap.addEventListener("click", e => {
-  if(e.target.closest(".speak-btn")) return;
+  if(e.target.closest(".speak-btn") || e.target.closest(".speak-row")) return;
   if(state.answerMode !== "type") flip();
 });
 let tsX=0, tsY=0;
 cardWrap.addEventListener("touchstart", e => { tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; }, {passive:true});
 cardWrap.addEventListener("touchend", e => {
   if(state.answerMode === "type") return;
-  if(e.target.closest(".speak-btn")) return;
+  if(e.target.closest(".speak-btn") || e.target.closest(".speak-row")) return;
   const dx = e.changedTouches[0].clientX - tsX;
   const dy = e.changedTouches[0].clientY - tsY;
   if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5){
@@ -3955,6 +4010,7 @@ const settingsBg = $("#settings-modal-bg");
 $("#settings-btn").addEventListener("click", () => {
   updateStats();
   populateTopics();
+  populateVoiceSelects();
   settingsBg.classList.add("open");
 });
 $("#close-settings-btn").addEventListener("click", () => settingsBg.classList.remove("open"));
@@ -3982,6 +4038,27 @@ exerOrderGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click",
   saveState();
   if(state.activeTab === "exer") exerNext();
 }));
+// Voice + rate handlers
+const voiceEsSel = $("#voice-es-select");
+const voiceMxSel = $("#voice-mx-select");
+const rateGroup = $("#rate-group");
+voiceEsSel.addEventListener("change", e => {
+  state.voiceES = e.target.value;
+  saveState();
+  // Preview the choice
+  speakSpanish("Hola, esta es mi voz para España.", null, "es-ES");
+});
+voiceMxSel.addEventListener("change", e => {
+  state.voiceMX = e.target.value;
+  saveState();
+  speakSpanish("Hola, esta es mi voz para México.", null, "es-MX");
+});
+rateGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
+  state.speechRate = parseFloat(b.dataset.rate);
+  setActive(rateGroup, String(state.speechRate), "rate");
+  saveState();
+  speakSpanish("Hola, esta es mi voz.", null, state.accent);
+}));
 
 $("#reset-btn").addEventListener("click", () => {
   if(confirm("Reset all progress? Your added words stay.")){
@@ -3995,6 +4072,27 @@ function populateTopics(){
   const sel = $("#topic-select");
   const topics = ["All topics", ...Array.from(new Set(EXERCISES.map(e => e.topic))).sort()];
   sel.innerHTML = topics.map(t => `<option ${t === state.topic ? "selected" : ""}>${escapeHtml(t)}</option>`).join("");
+}
+
+function populateVoiceSelects(){
+  if(!availableVoices.length) loadVoices();
+  const esSel = $("#voice-es-select");
+  const mxSel = $("#voice-mx-select");
+  if(!esSel || !mxSel) return;
+  function renderInto(sel, prefix, currentValue){
+    // List Spanish voices, sorted by quality
+    const voices = availableVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith("es"))
+      .sort((a,b) => qualityScore(b) - qualityScore(a));
+    const auto = `<option value="" ${currentValue===""?"selected":""}>Auto (best ${prefix} voice)</option>`;
+    const opts = voices.map(v => {
+      const sel = v.name === currentValue ? "selected" : "";
+      const q = qualityScore(v) >= 80 ? " ⭐" : "";
+      return `<option value="${escapeHtml(v.name)}" ${sel}>${escapeHtml(v.name)} · ${escapeHtml(v.lang)}${q}</option>`;
+    }).join("");
+    sel.innerHTML = auto + opts;
+  }
+  renderInto(esSel, "Spain", state.voiceES || "");
+  renderInto(mxSel, "Mexico", state.voiceMX || "");
 }
 $("#topic-select").addEventListener("change", e => {
   state.topic = e.target.value;
@@ -4062,6 +4160,7 @@ setActive(filterGroup, state.filter, "filter");
 setActive(accentGroup, state.accent, "acc");
 setActive(autospeakGroup, state.autoSpeak, "as");
 setActive(exerOrderGroup, state.exerOrder, "eo");
+setActive(rateGroup, String(state.speechRate || 0.85), "rate");
 applyAnswerModeUI();
 applyTabUI();
 rebuildVocab();
