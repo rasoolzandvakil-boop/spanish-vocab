@@ -216,7 +216,7 @@
     <div class="tap-hint" id="tap-hint">Tap card to flip · 🔊ES / 🔊MX to hear it</div>
     <div class="type-area" id="type-area">
       <div class="type-row">
-        <input type="text" class="type-input" id="type-input" placeholder="Type the translation…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+        <input type="text" class="type-input" id="type-input" placeholder="Type translation (in either language)…" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
         <button class="type-check" id="type-check-btn">Check</button>
       </div>
       <div class="type-feedback" id="type-feedback"></div>
@@ -3930,7 +3930,7 @@ const STORAGE_KEY = "spanish_vocab_v4";
 function defaultState(){
   return {
     cardProgress: {}, exerProgress: {}, session: 0,
-    direction:"es-en", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
+    direction:"mixed", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
     activeTab:"vocab",
     accent:"es-ES", autoSpeak:"on",
     voiceES:"", voiceMX:"",
@@ -4342,9 +4342,12 @@ function handleTypeCheck(){
   }
   const v = VOCAB_BY_KEY.get(state.currentKey);
   const dir = state.currentDir;
-  const answer = dir === "es-en" ? v.en : v.es;
+  // Accept the answer in EITHER language. The card asks for the "other side"
+  // but if you'd rather type the same-side word again that's also fine.
+  const expected = dir === "es-en" ? v.en : v.es;
+  const altSide = dir === "es-en" ? v.es : v.en;
   const typed = typeInput.value.trim();
-  const isRight = checkTypedAnswer(typed, answer);
+  const isRight = checkTypedAnswer(typed, expected) || checkTypedAnswer(typed, altSide);
   typeInput.disabled = true;
   typeInput.classList.add(isRight ? "right" : "wrong");
   document.querySelectorAll(".card-face").forEach(el => el.classList.add(isRight ? "right" : "wrong"));
@@ -4353,7 +4356,7 @@ function handleTypeCheck(){
     typeFeedback.textContent = typed ? "Correct ✓" : "—";
     typeFeedback.className = "type-feedback right";
   } else {
-    typeFeedback.innerHTML = `<b>Was:</b> ${escapeHtml(answer)}`;
+    typeFeedback.innerHTML = `<b>Answer:</b> ${escapeHtml(expected)}`;
     typeFeedback.className = "type-feedback wrong";
   }
   typeCheckBtn.textContent = "Next";
