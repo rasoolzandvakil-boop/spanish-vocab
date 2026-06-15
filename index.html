@@ -115,8 +115,29 @@
   .exer-feedback b{color:var(--ink);}
 
   footer{display:flex; gap:10px; padding:10px 16px 12px; flex-shrink:0;}
-  body.type-mode footer, body.exer-mode footer, body.mist-mode footer{display:none;}
+  body.type-mode footer, body.exer-mode footer, body.mist-mode footer, body.tasks-mode footer{display:none;}
   body.mist-mode .card-wrap, body.mist-mode .tap-hint{display:none;}
+  body.tasks-mode .card-wrap, body.tasks-mode .tap-hint{display:none;}
+  /* Tasks panel */
+  .tasks-panel{display:none; width:100%; max-width:600px; flex-direction:column; gap:10px; overflow-y:auto; height:100%; padding-bottom:24px;}
+  body.tasks-mode .tasks-panel{display:flex;}
+  .tasks-intro{font-size:13px; color:var(--muted); line-height:1.45; padding:0 4px;}
+  .tasks-filter{display:flex; gap:4px; flex-wrap:wrap; padding:4px 0;}
+  .tasks-kind-btn{padding:5px 10px; font-size:11px; font-weight:600; color:var(--muted); border:1px solid rgba(0,0,0,0.10); background:transparent; border-radius:14px; cursor:pointer; font-family:inherit; letter-spacing:0.3px;}
+  .tasks-kind-btn.active{background:var(--accent); color:white; border-color:var(--accent);}
+  .task-card{background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow); padding:12px 14px; display:flex; flex-direction:column; gap:6px; cursor:pointer; transition:transform 0.1s;}
+  .task-card:active{transform:scale(0.98);}
+  .task-card.visited{opacity:0.7;}
+  .task-row{display:flex; align-items:center; gap:8px;}
+  .task-title{font-size:14px; font-weight:600; color:var(--ink); flex:1;}
+  .task-date{font-size:11px; color:var(--muted); letter-spacing:0.4px; flex-shrink:0;}
+  .task-kind{display:inline-block; font-size:10px; padding:2px 7px; border-radius:8px; background:rgba(196,77,60,0.10); color:var(--accent); font-weight:600; letter-spacing:0.4px; text-transform:uppercase;}
+  .task-kind.theory{background:rgba(122,79,138,0.12); color:var(--accent2);}
+  .task-kind.listening{background:rgba(61,111,142,0.12); color:var(--blue);}
+  .task-kind.reading{background:rgba(91,138,90,0.12); color:var(--green);}
+  .task-kind.grammar{background:rgba(241,194,50,0.18); color:#8a6f1a;}
+  .task-kind.vocabulary{background:rgba(196,77,60,0.10); color:var(--accent);}
+  .task-subj{font-size:11px; color:var(--muted); line-height:1.3;}
   /* Mistakes list panel */
   .mist-panel{display:none; width:100%; max-width:560px; flex-direction:column; gap:12px; overflow-y:auto; height:100%; padding-bottom:24px;}
   body.mist-mode .mist-panel{display:flex;}
@@ -185,6 +206,7 @@
     <button class="tab active" data-tab="vocab">Vocab</button>
     <button class="tab" data-tab="exer">Exercises</button>
     <button class="tab" data-tab="mist">Mistakes</button>
+    <button class="tab" data-tab="tasks">Tasks</button>
   </div>
   <main>
     <div class="card-wrap" id="card-wrap">
@@ -226,6 +248,13 @@
     <div class="mist-panel" id="mist-panel">
       <div class="mist-intro" id="mist-intro">…</div>
       <div id="mist-list"></div>
+    </div>
+
+    <!-- Tasks panel: Oriol's emailed exercise & theory links -->
+    <div class="tasks-panel" id="tasks-panel">
+      <div class="tasks-intro" id="tasks-intro">…</div>
+      <div class="tasks-filter" id="tasks-filter"></div>
+      <div id="tasks-list"></div>
     </div>
 
     <!-- Exercises panel -->
@@ -3925,6 +3954,416 @@ const MISTAKES = [
     "drillTopic": "Verb expressions"
   }
 ];
+const TASKS = [
+  {
+    "subject": "Calendario de abril y unos días libres",
+    "date": "2026-03-19",
+    "display": "Calendly",
+    "url": "https://calendly.com/formacion-oriolneira/50min",
+    "category": "Calendly",
+    "kind": "Calendly"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-03-26",
+    "display": "ejercicio de lectura",
+    "url": "https://deleahora.com/actividades/comprension-de-lectura/el-patio-cordobes",
+    "category": "Spanish Exercise",
+    "kind": "Reading"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-03-26",
+    "display": "Bien, buen, bueno",
+    "url": "https://www.espagnolfacile.com/exercices/exercice-espagnol-2/exercice-espagnol-15527.php",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-03-26",
+    "display": "teoría (bueno/buen/bien)",
+    "url": "https://deleahora.com/blog/gramatica/bueno-buen-y-bien-diferencias-de-uso",
+    "category": "Spanish Exercise",
+    "kind": "Theory"
+  },
+  {
+    "subject": "Tareas para el 6 de abril",
+    "date": "2026-04-04",
+    "display": "página de conectores",
+    "url": "https://www.profedeele.es/actividad/marcadores-discursivos-conectores/",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas para el 6 de abril",
+    "date": "2026-04-04",
+    "display": "escucha (desayuno)",
+    "url": "https://espanol.lingolia.com/es/comprension-auditiva/b1/articles/cada-generacion-con-su-desayuno",
+    "category": "Spanish Exercise",
+    "kind": "Listening"
+  },
+  {
+    "subject": "Tareas para el 6 de abril",
+    "date": "2026-04-04",
+    "display": "vocabulario de profesiones",
+    "url": "https://aprenderespanol.org/ejercicios/vocabulario/profesiones/oficios-test-1.htm",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español para el jueves 8 de abril",
+    "date": "2026-04-06",
+    "display": "escrito de los conectores",
+    "url": "https://www.profedeele.es/actividad/marcadores-discursivos-conectores/",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas de español para el jueves 8 de abril",
+    "date": "2026-04-06",
+    "display": "Indefinido y el imperfecto",
+    "url": "https://personal.colby.edu/~bknelson/SLC/ricitos1.html",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el jueves 8 de abril",
+    "date": "2026-04-06",
+    "display": "teoría (Indef./imperf.)",
+    "url": "https://learn.bowdoin.edu/spanish-grammar/newgr/ats/33.htm",
+    "category": "Spanish Exercise",
+    "kind": "Theory"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-04-10",
+    "display": "vocabulario (salud)",
+    "url": "https://deleahora.com/actividades/vocabulario/en-la-salud-y-en-la-enfermedad",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-04-10",
+    "display": "gramática 2 (ricitos2)",
+    "url": "https://personal.colby.edu/~bknelson/SLC/ricitos2.html",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-04-10",
+    "display": "lectura (Juegos Olímpicos)",
+    "url": "https://espanol.lingolia.com/es/comprension-lectora/b2/articles/los-juegos-olimpicos-de-invierno",
+    "category": "Spanish Exercise",
+    "kind": "Reading"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-04-10",
+    "display": "escritura (artículo opinión)",
+    "url": "https://deleahora.com/actividades/expresion-escrita/redactar-un-articulo-de-opinion",
+    "category": "Spanish Exercise",
+    "kind": "Writing"
+  },
+  {
+    "subject": "Tareas de español para el viernes 1 de mayo",
+    "date": "2026-04-29",
+    "display": "vocabulario (salud)",
+    "url": "https://deleahora.com/actividades/vocabulario/en-la-salud-y-en-la-enfermedad",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español para el viernes 1 de mayo",
+    "date": "2026-04-29",
+    "display": "gramática 2 (ricitos2)",
+    "url": "https://personal.colby.edu/~bknelson/SLC/ricitos2.html",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el viernes 1 de mayo",
+    "date": "2026-04-29",
+    "display": "lectura (Juegos Olímpicos)",
+    "url": "https://espanol.lingolia.com/es/comprension-lectora/b2/articles/los-juegos-olimpicos-de-invierno",
+    "category": "Spanish Exercise",
+    "kind": "Reading"
+  },
+  {
+    "subject": "Tareas de español para el viernes 1 de mayo",
+    "date": "2026-04-29",
+    "display": "escritura (artículo opinión)",
+    "url": "https://deleahora.com/actividades/expresion-escrita/redactar-un-articulo-de-opinion",
+    "category": "Spanish Exercise",
+    "kind": "Writing"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 6 de mayo",
+    "date": "2026-05-01",
+    "display": "preposiciones",
+    "url": "https://deleahora.com/actividades/gramatica/preposiciones-cual-es-la-correcta",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 6 de mayo",
+    "date": "2026-05-01",
+    "display": "pasados (superhombre)",
+    "url": "https://personal.colby.edu/~bknelson/SLC/superhombre.html",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 6 de mayo",
+    "date": "2026-05-04",
+    "display": "pasados (superhombre2)",
+    "url": "https://personal.colby.edu/~bknelson/SLC/superhombre2.html",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 6 de mayo",
+    "date": "2026-05-04",
+    "display": "vocabulario (ciudad)",
+    "url": "https://aprenderespanol.org/ejercicios/vocabulario/ciudad/direcciones-lugares.htm",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 6 de mayo",
+    "date": "2026-05-04",
+    "display": "escucha (los Goya)",
+    "url": "https://deleahora.com/actividades/comprension-auditiva/los-goya-premios-del-cine-espanol",
+    "category": "Spanish Exercise",
+    "kind": "Listening"
+  },
+  {
+    "subject": "Oriol Neira shared document",
+    "date": "2026-05-04",
+    "display": "Clase de español Oriol y Rasool",
+    "url": "https://icls365-my.sharepoint.com/:w:/g/personal/oneira_icls_edu/IQDrl_-0YRwoRYhdSDHE8TSYAUTlFfgvwBbOCyhM2vvmlxo",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Tareas de español para el lunes 11",
+    "date": "2026-05-06",
+    "display": "preposiciones sencillo",
+    "url": "https://deleahora.com/actividades/gramatica/preposiciones-nivel-basico",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el lunes 11",
+    "date": "2026-05-06",
+    "display": "Qué y cuál",
+    "url": "https://deleahora.com/actividades/gramatica/que-o-cual-cuidado-interrogativos-en-espanol",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas de español para el lunes 11",
+    "date": "2026-05-06",
+    "display": "independencia de México (ej. 3 y 8)",
+    "url": "https://www.profedeele.es/actividad/independencia-de-mexico/",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas para el miércoles 13",
+    "date": "2026-05-11",
+    "display": "México (ej. 5)",
+    "url": "https://www.profedeele.es/actividad/independencia-de-mexico/",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas para el miércoles 13",
+    "date": "2026-05-11",
+    "display": "hoja de repaso",
+    "url": "https://learn.bowdoin.edu/spanish-grammar/newgr/ats/27r5.htm",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas para el miércoles 13",
+    "date": "2026-05-11",
+    "display": "nuestra página compartida",
+    "url": "https://icls365-my.sharepoint.com/:w:/r/personal/oneira_icls_edu/Documents/Clase%20de%20espa%C3%B1ol%20Oriol%20y%20Rasool.docx",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-13",
+    "display": "hoja de repaso",
+    "url": "https://learn.bowdoin.edu/spanish-grammar/newgr/ats/27r5.htm",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-13",
+    "display": "nuestro documento compartido",
+    "url": "https://cryptpad.fr/doc/#/2/doc/edit/uK-YwWSneQjga4RPoIewaU7q/",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Re: Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-14",
+    "display": "ejercicio 1 (ya/todavía)",
+    "url": "https://aprenderespanol.org/ejercicios/gramatica/adverbios/ya-aun.htm",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Re: Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-14",
+    "display": "ejercicio 2 (ya/todavía)",
+    "url": "https://spanish.tolearnfree.com/free-spanish-lessons/free-spanish-exercise-131311.php",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Re: Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-14",
+    "display": "teoría (ya/todavía/aún)",
+    "url": "https://www.linguno.com/wordComparison/esp/ya-todavia-aun/",
+    "category": "Spanish Exercise",
+    "kind": "Theory"
+  },
+  {
+    "subject": "Re: Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-14",
+    "display": "hoja de repaso",
+    "url": "https://learn.bowdoin.edu/spanish-grammar/newgr/ats/27r5.htm",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Re: Tareas de español para el viernes 15 de mayo",
+    "date": "2026-05-14",
+    "display": "nuestro documento compartido",
+    "url": "https://cryptpad.fr/doc/#/2/doc/edit/uK-YwWSneQjga4RPoIewaU7q/",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Tareas de español para el martes 19",
+    "date": "2026-05-15",
+    "display": "gramática (time phrases)",
+    "url": "https://www.languagesonline.org.uk/Spanish/TimePhrases/9.htm",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español para el martes 19",
+    "date": "2026-05-15",
+    "display": "vocabulario (personalidad)",
+    "url": "https://deleahora.com/actividades/vocabulario/palabras-para-describir-la-personalidad",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "indefinidos",
+    "url": "https://deleahora.com/actividades/gramatica/alguien-nadie-algo-nada-pronombres-indefinidos",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "teoría (indefinidos)",
+    "url": "https://www.tellmeinspanish.com/grammar/indefinite-words-in-spanish/",
+    "category": "Spanish Exercise",
+    "kind": "Theory"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "Se impersonal",
+    "url": "https://spanishgrammar.co.uk/impersonal-se",
+    "category": "Spanish Exercise",
+    "kind": "Exercise"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "artículos",
+    "url": "https://spanishgrammar.co.uk/practice-articles/mixed",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "teoría (artículos)",
+    "url": "https://learn.bowdoin.edu/spanish-grammar/newgr/ats/08a10.htm",
+    "category": "Spanish Exercise",
+    "kind": "Theory"
+  },
+  {
+    "subject": "Tareas de español",
+    "date": "2026-05-22",
+    "display": "nuevo documento compartido",
+    "url": "https://cryptpad.fr/pad/#/2/pad/view/5ycgsYLFe-W8pFk2az81YujOSZe1OKNU5PsAgI11Lvg/",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Re: Tareas de español",
+    "date": "2026-05-22",
+    "display": "documento (cryptpad edit)",
+    "url": "https://cryptpad.fr/doc/#/2/doc/edit/UuYnl7Digt-8NYTj4MfTspTV/",
+    "category": "Shared Document",
+    "kind": "Shared doc"
+  },
+  {
+    "subject": "Tareas de español para el miércoles 3 de junio",
+    "date": "2026-06-01",
+    "display": "página de vocabulario",
+    "url": "https://aprendevocabularioespanol.org/paginas_contenidos/B1_B2/tema01/tema01_1.html",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-06-03",
+    "display": "vocabulario",
+    "url": "https://aprendevocabularioespanol.org/paginas_contenidos/B1_B2/tema01/tema01_2.html",
+    "category": "Spanish Exercise",
+    "kind": "Vocabulary"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-06-03",
+    "display": "escucha (Bogotá)",
+    "url": "https://deleahora.com/actividades/comprension-auditiva/el-planetario-de-bogota",
+    "category": "Spanish Exercise",
+    "kind": "Listening"
+  },
+  {
+    "subject": "Tareas de español para la próxima clase",
+    "date": "2026-06-03",
+    "display": "gramática (verbo ir)",
+    "url": "https://deleahora.com/actividades/gramatica/practica-con-el-verbo-irregular-ir",
+    "category": "Spanish Exercise",
+    "kind": "Grammar"
+  },
+  {
+    "subject": "All emails (signature)",
+    "date": "Recurring",
+    "display": "www.icls.edu",
+    "url": "https://www.icls.edu/",
+    "category": "Signature/Website",
+    "kind": "Exercise"
+  }
+];
 const STORAGE_KEY = "spanish_vocab_v4";
 
 function defaultState(){
@@ -3940,6 +4379,8 @@ function defaultState(){
     exerOrder:"lesson",
     exerCursor:0,
     fixedMistakes:{},      // {mistake_id: true} for ones you've marked solved
+    visitedTasks:{},       // {url: true} for opened Oriol links
+    tasksKindFilter:"All", // current filter in Tasks tab
     currentKey:null, currentDir:"es-en", showingBack:false,
     currentExerIdx:null,
     totalCorrect:0, totalWrong:0, streak:0,
@@ -4152,7 +4593,57 @@ function applyAnswerModeUI(){
 function applyTabUI(){
   document.body.classList.toggle("exer-mode", state.activeTab === "exer");
   document.body.classList.toggle("mist-mode", state.activeTab === "mist");
+  document.body.classList.toggle("tasks-mode", state.activeTab === "tasks");
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
+}
+
+// === Tasks tab — Oriol's emailed exercise & theory links ===
+function renderTasks(){
+  const visited = state.visitedTasks || {};
+  const visitedCount = Object.values(visited).filter(Boolean).length;
+  $("#tasks-intro").innerHTML = `<b>${TASKS.length} links</b> Oriol has sent you (exercises, theory, listening, reading, shared docs). Tap a card to open it. ${visitedCount}/${TASKS.length} visited.`;
+
+  // Build filter chips
+  const kinds = Array.from(new Set(TASKS.map(t => t.kind))).sort();
+  const activeKind = state.tasksKindFilter || "All";
+  $("#tasks-filter").innerHTML = ["All", ...kinds].map(k =>
+    `<button class="tasks-kind-btn ${k === activeKind ? 'active' : ''}" data-kind="${escapeHtml(k)}">${escapeHtml(k)}</button>`
+  ).join("");
+  $("#tasks-filter").querySelectorAll(".tasks-kind-btn").forEach(b => {
+    b.addEventListener("click", () => { state.tasksKindFilter = b.dataset.kind; saveState(); renderTasks(); });
+  });
+
+  // Filter + sort: most recent first
+  let filtered = TASKS.slice();
+  if(activeKind !== "All") filtered = filtered.filter(t => t.kind === activeKind);
+  filtered.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+
+  $("#tasks-list").innerHTML = filtered.map((t, i) => {
+    const v = visited[t.url] ? "visited" : "";
+    const kindClass = t.kind.toLowerCase().replace(" ", "-");
+    return `<div class="task-card ${v}" data-url="${escapeHtml(t.url)}">
+      <div class="task-row">
+        <div class="task-title">${escapeHtml(t.display || t.url)}</div>
+        <div class="task-date">${escapeHtml(t.date || "")}</div>
+      </div>
+      <div class="task-row">
+        <span class="task-kind ${kindClass}">${escapeHtml(t.kind)}</span>
+        <span class="task-subj">${escapeHtml(t.subject || "")}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  // Wire up card taps
+  $("#tasks-list").querySelectorAll(".task-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const url = card.dataset.url;
+      if(!state.visitedTasks) state.visitedTasks = {};
+      state.visitedTasks[url] = true;
+      saveState();
+      window.open(url, "_blank", "noopener");
+      card.classList.add("visited");
+    });
+  });
 }
 
 // === Mistakes tab ===
@@ -4272,6 +4763,10 @@ function updateStats(){
   } else if(state.activeTab === "mist"){
     $("#stats").textContent = `Mistakes: ${fixedCount}/${MISTAKES.length} marked fixed`;
     $("#progress-fill").style.width = (fixedCount / MISTAKES.length * 100).toFixed(1) + "%";
+  } else if(state.activeTab === "tasks"){
+    const visitedCount = Object.values(state.visitedTasks || {}).filter(Boolean).length;
+    $("#stats").textContent = `Tasks: ${visitedCount}/${TASKS.length} visited`;
+    $("#progress-fill").style.width = (visitedCount / TASKS.length * 100).toFixed(1) + "%";
   } else {
     $("#stats").textContent = `${seen}/${total} seen · ${mastered} mastered`;
     $("#progress-fill").style.width = (total ? (mastered/total*100).toFixed(1) + "%" : "0");
@@ -4542,6 +5037,7 @@ document.querySelectorAll(".tab").forEach(t => {
     applyTabUI();
     if(state.activeTab === "exer"){ exerNext(); }
     else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
+    else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
     else { next(); }
   });
 });
@@ -4873,6 +5369,7 @@ rebuildVocab();
 populateTopics();
 if(state.activeTab === "exer") exerNext();
 else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
+else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
 else next();
 </script>
 </body>
