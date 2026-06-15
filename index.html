@@ -115,7 +115,26 @@
   .exer-feedback b{color:var(--ink);}
 
   footer{display:flex; gap:10px; padding:10px 16px 12px; flex-shrink:0;}
-  body.type-mode footer, body.exer-mode footer{display:none;}
+  body.type-mode footer, body.exer-mode footer, body.mist-mode footer{display:none;}
+  body.mist-mode .card-wrap, body.mist-mode .tap-hint{display:none;}
+  /* Mistakes list panel */
+  .mist-panel{display:none; width:100%; max-width:560px; flex-direction:column; gap:12px; overflow-y:auto; height:100%; padding-bottom:24px;}
+  body.mist-mode .mist-panel{display:flex;}
+  .mist-intro{font-size:13px; color:var(--muted); line-height:1.45; padding:0 4px;}
+  .mist-card{background:var(--card-bg); border-radius:16px; box-shadow:var(--shadow); padding:16px 16px 12px;}
+  .mist-card.fixed{background:#eaf3e2;}
+  .mist-title{font-size:15px; font-weight:700; color:var(--ink); margin-bottom:4px; line-height:1.3;}
+  .mist-count{display:inline-block; font-size:11px; color:var(--accent); background:rgba(196,77,60,0.10); padding:2px 8px; border-radius:10px; font-weight:600; letter-spacing:0.3px;}
+  .mist-count.fixed{color:var(--green); background:rgba(91,138,90,0.15);}
+  .mist-rule{font-size:13px; color:var(--ink); line-height:1.5; margin:10px 0;}
+  .mist-ex-title{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.6px; margin-top:8px; font-weight:600;}
+  .mist-ex{font-size:13px; color:#3a302d; line-height:1.5; padding:6px 0; border-bottom:1px dashed rgba(0,0,0,0.06);}
+  .mist-ex:last-child{border-bottom:none;}
+  .mist-buttons{display:flex; gap:8px; margin-top:12px;}
+  .mist-btn{flex:1; height:40px; border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit;}
+  .mist-btn.drill{background:var(--accent); color:white;}
+  .mist-btn.mark{background:transparent; color:var(--green); border:1px solid rgba(91,138,90,0.5);}
+  .mist-btn.unmark{background:transparent; color:var(--muted); border:1px solid rgba(0,0,0,0.15);}
   .action-btn{flex:1; height:52px; border:none; border-radius:16px; font-size:15px; font-weight:600; cursor:pointer; transition:transform 0.1s; font-family:inherit; -webkit-appearance:none; letter-spacing:0.2px;}
   .action-btn:active{transform:scale(0.97);}
   .action-btn.miss{background:#fde8e6; color:var(--red);}
@@ -165,6 +184,7 @@
   <div class="tabbar">
     <button class="tab active" data-tab="vocab">Vocab</button>
     <button class="tab" data-tab="exer">Exercises</button>
+    <button class="tab" data-tab="mist">Mistakes</button>
   </div>
   <main>
     <div class="card-wrap" id="card-wrap">
@@ -200,6 +220,12 @@
         <button class="type-check" id="type-check-btn">Check</button>
       </div>
       <div class="type-feedback" id="type-feedback"></div>
+    </div>
+
+    <!-- Mistakes panel -->
+    <div class="mist-panel" id="mist-panel">
+      <div class="mist-intro" id="mist-intro">…</div>
+      <div id="mist-list"></div>
     </div>
 
     <!-- Exercises panel -->
@@ -3524,6 +3550,176 @@ const EXERCISES = [
     "lesson_date": "2026-03-20"
   }
 ];
+const MISTAKES = [
+  {
+    "id": "preposition-a",
+    "title": "Misplaced preposition 'a' (personal a / motion a)",
+    "rule": "Use 'a' before a human direct object ('a mis amigos'), before motion verbs going somewhere ('Voy a Madrid'), and after certain verbs (preguntar a, ayudar a). Don't use it before things you receive or buy.",
+    "count": 13,
+    "examples": [
+      "Soluciono mis problemas preguntando ___ mis amigos lo que piensan. (a — personal a)",
+      "Mi amigo salió ___ Mexico. (a — motion to a place)",
+      "Voy ___ Madrid mañana. (a)"
+    ],
+    "drillTopic": "Prepositions"
+  },
+  {
+    "id": "article-gender",
+    "title": "Article gender — el/la traps",
+    "rule": "Words ending in -a but masculine: el día, el problema, el tema, el sistema, el programa. Words ending in -o but feminine: la mano, la foto, la moto. Singular feminine starting with stressed á uses 'el': el agua, el águila.",
+    "count": 14,
+    "examples": [
+      "___ día tuvo un ritmo lento. (El, not La)",
+      "Pedro Almodóvar es un pionero de ___ innovación cinematográfica. (la)",
+      "Nacido en ___ Mancha. (La, place name)"
+    ],
+    "drillTopic": "Articles — Gender"
+  },
+  {
+    "id": "gerundio-by-ing",
+    "title": "Gerundio (-ando/-iendo) for 'by + ing'",
+    "rule": "English 'by doing' = Spanish gerundio without 'por'. Practicando = by practicing. Preguntando = by asking. BUT: 'to continue to do' = seguir/continuar + gerundio, NOT 'continuar a + infinitive'.",
+    "count": 9,
+    "examples": [
+      "___ frecuentemente vamos a mejorar nuestra escritura. (Practicando = By practicing)",
+      "Soluciono mis problemas ___ a mis amigos. (preguntando)",
+      "No voy a continuar ___. (leyendo — NOT 'a leer')"
+    ],
+    "drillTopic": "Gerundio vs Infinitivo"
+  },
+  {
+    "id": "comparison-que-de-lo-que",
+    "title": "Comparison: que vs de / de lo que",
+    "rule": "más X que Y for normal comparison. más X de + NUMBER ('más de 10'). más X de lo que + CLAUSE ('más alto de lo que recuerdo'). Plural noun comparison: de los/las que.",
+    "count": 9,
+    "examples": [
+      "Es más difícil ___ ___ ___ pensaba. (de lo que — clause comparison)",
+      "Mi hermana es más alta ___ su novio. (que — simple)",
+      "Tengo menos ___ 10 cervezas. (de — with number)"
+    ],
+    "drillTopic": "Comparatives"
+  },
+  {
+    "id": "antes-despues-de",
+    "title": "antes / después always need DE before a reference point",
+    "rule": "antes DE comer (before eating), después DE las cinco (after 5), antes DE + infinitive, después DE + noun. The DE is mandatory.",
+    "count": 7,
+    "examples": [
+      "Antes ___ comer, me lavo las manos. (de)",
+      "Después ___ las cinco salimos. (de)",
+      "El concierto fue después ___ la cena. (de)"
+    ],
+    "drillTopic": "Prepositions"
+  },
+  {
+    "id": "preterite-imperfect-description",
+    "title": "Pretérito vs Imperfecto — description vs event",
+    "rule": "Description / state in the past = imperfect (eran, tenía, había, estaba). Completed event or change of state = preterite (fueron, tuvo, hubo, estuvo). Both can sometimes work; imperfect describes 'what it was like', preterite describes 'what happened'.",
+    "count": 8,
+    "examples": [
+      "Los platos ___ deliciosos. (eran — describing the food)",
+      "La salsa ___ muy buena. (era — description)",
+      "El bistec ___ buenísimo. (era)"
+    ],
+    "drillTopic": "Preterite vs Imperfect"
+  },
+  {
+    "id": "preterite-present-perfect",
+    "title": "Pretérito vs Presente Perfecto — completed time vs current",
+    "rule": "'esta semana / hoy / este mes / este año' (time still flowing) = present perfect ('he tenido'). 'ayer / la semana pasada / en 2020' (closed time) = preterite ('tuve').",
+    "count": 5,
+    "examples": [
+      "Esta semana ___ ___ mucho trabajo. (he tenido)",
+      "Ayer ___ una reunión larga. (tuve)",
+      "Hoy ___ ___ a tres amigos. (he visto)"
+    ],
+    "drillTopic": "Preterite vs Pres. Perfect"
+  },
+  {
+    "id": "accent-extra-e",
+    "title": "Extra letter in preterite (visitóe → visitó)",
+    "rule": "Preterite 3rd person singular ends in -ó (accent on the o) for -ar verbs, and -ió for -er/-ir verbs. Don't add an extra 'e' after the accented vowel.",
+    "count": 4,
+    "examples": [
+      "Una amiga me ___ por poco tiempo. (visitó — NOT visitóe)",
+      "Mi amigo ___ a Mexico. (salió — NOT salióe)",
+      "El concierto ___ a medianoche. (terminó)"
+    ],
+    "drillTopic": "Preterite — 3rd person"
+  },
+  {
+    "id": "missing-accents",
+    "title": "Missing accents — también, día, sí, más",
+    "rule": "Common words that need accents: también, día, sí (yes), más (more), cómo (how), qué (what), aquí, allí, todavía. Common ones that DON'T: fue, vio, fui, dio (these are monosyllabic, no accent).",
+    "count": 6,
+    "examples": [
+      "___ me gusta la pasta. (También — needs accent)",
+      "Cada ___ tomo café. (día)",
+      "Eso ___ ayer. (fue — NOT 'fué')"
+    ],
+    "drillTopic": "Articles — Gender"
+  },
+  {
+    "id": "saber-vs-conocer-preterite",
+    "title": "Saber vs Conocer — meaning shifts in preterite",
+    "rule": "Saber preterite = 'found out / learned' ('Supe la noticia ayer'). Conocer preterite = 'met for the first time' ('La conocí en 2010'). Imperfect: sabía = 'used to know', conocía = 'used to know (a person)'.",
+    "count": 3,
+    "examples": [
+      "___ la noticia esta mañana. (Supe = I found out)",
+      "La ___ en la fiesta. (conocí = met for the first time)",
+      "Ya ___ que estabas enfermo. (sabía = I already knew)"
+    ],
+    "drillTopic": "Preterite — Irregular"
+  },
+  {
+    "id": "profession-no-article",
+    "title": "Profession after ser — no article unless qualifier",
+    "rule": "Yo soy economista. (no 'un') Mi padre es médico. With a qualifier (good, bad, etc.) the article comes back: Soy un buen economista. Soy un mal estudiante.",
+    "count": 4,
+    "examples": [
+      "Yo soy ___ economista. (no article — Oriol crossed out 'un')",
+      "Soy ___ buen economista. (un — qualifier brings it back)",
+      "Mi padre es ___ médico. (no article)"
+    ],
+    "drillTopic": "Articles — Profession"
+  },
+  {
+    "id": "negation-ni",
+    "title": "ni... ni... for 'neither... nor...'",
+    "rule": "Spanish ni X ni Y = English 'neither X nor Y'. Use 'tampoco' for 'neither' alone. 'No leo ni los mensajes de él ni los de ella.'",
+    "count": 4,
+    "examples": [
+      "Nunca leo ___ los mensajes de él ___ los de ella. (ni / ni)",
+      "Yo ___ lo uso. (tampoco — neither do I)",
+      "No tengo coche ___ moto. (ni)"
+    ],
+    "drillTopic": "From Oriol's lessons"
+  },
+  {
+    "id": "todavia-vs-ya",
+    "title": "todavía vs ya — still vs already",
+    "rule": "todavía = still (continuing). ya = already / now (change of state). 'El reloj todavía es nuevo pero ya está roto' = 'still new but already broken'.",
+    "count": 3,
+    "examples": [
+      "El reloj ___ es nuevo pero ___ está roto. (todavía / ya)",
+      "___ no he terminado. (Todavía — still not done)",
+      "___ llegué. (Ya — already arrived)"
+    ],
+    "drillTopic": "From Oriol's lessons"
+  },
+  {
+    "id": "tener-que-vs-tener",
+    "title": "tener que + infinitive (have to)",
+    "rule": "Tener QUE + infinitive = 'have to': 'Tienes que caminar a tu izquierda'. Without 'que' the verb doesn't carry the 'must' meaning.",
+    "count": 3,
+    "examples": [
+      "Tienes ___ caminar a tu izquierda. (que)",
+      "Tengo ___ ir al médico mañana. (que)",
+      "No tenemos ___ esperar. (que)"
+    ],
+    "drillTopic": "From Oriol's lessons"
+  }
+];
 const STORAGE_KEY = "spanish_vocab_v4";
 
 function defaultState(){
@@ -3534,10 +3730,11 @@ function defaultState(){
     accent:"es-ES", autoSpeak:"on",
     voiceES:"", voiceMX:"",
     speechRate:0.85,
-    vocabOrder:"lesson",  // "lesson" | "smart" | "frequency" | "random"
+    vocabOrder:"lesson",
     vocabCursor:0,
     exerOrder:"lesson",
     exerCursor:0,
+    fixedMistakes:{},      // {mistake_id: true} for ones you've marked solved
     currentKey:null, currentDir:"es-en", showingBack:false,
     currentExerIdx:null,
     totalCorrect:0, totalWrong:0, streak:0,
@@ -3731,7 +3928,55 @@ function applyAnswerModeUI(){
 }
 function applyTabUI(){
   document.body.classList.toggle("exer-mode", state.activeTab === "exer");
+  document.body.classList.toggle("mist-mode", state.activeTab === "mist");
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
+}
+
+// === Mistakes tab ===
+function renderMistakes(){
+  const fixedCount = Object.keys(state.fixedMistakes || {}).filter(k => state.fixedMistakes[k]).length;
+  $("#mist-intro").innerHTML = `<b>${MISTAKES.length} recurring patterns</b> Oriol has corrected you on — mined from your lesson docs. Tap <b>Drill it</b> to load the matching exercises, or <b>Mark fixed</b> when you've nailed it. ${fixedCount}/${MISTAKES.length} marked fixed.`;
+  const list = $("#mist-list");
+  // Sort: unfixed first (by count desc), then fixed
+  const sorted = MISTAKES.slice().sort((a,b) => {
+    const af = state.fixedMistakes[a.id] ? 1 : 0;
+    const bf = state.fixedMistakes[b.id] ? 1 : 0;
+    if(af !== bf) return af - bf;
+    return (b.count || 0) - (a.count || 0);
+  });
+  list.innerHTML = sorted.map(m => {
+    const fixed = state.fixedMistakes[m.id];
+    const examplesHtml = (m.examples || []).map(e => `<div class="mist-ex">${escapeHtml(e)}</div>`).join("");
+    return `
+      <div class="mist-card ${fixed ? 'fixed' : ''}" data-mid="${escapeHtml(m.id)}">
+        <div class="mist-title">${escapeHtml(m.title)}</div>
+        <span class="mist-count ${fixed ? 'fixed' : ''}">${fixed ? '✓ Fixed' : m.count + '× corrected'}</span>
+        <div class="mist-rule">${escapeHtml(m.rule)}</div>
+        <div class="mist-ex-title">From your writing</div>
+        ${examplesHtml}
+        <div class="mist-buttons">
+          <button class="mist-btn drill" data-action="drill">Drill it</button>
+          <button class="mist-btn ${fixed ? 'unmark' : 'mark'}" data-action="toggle">${fixed ? 'Unmark' : 'Mark fixed'}</button>
+        </div>
+      </div>`;
+  }).join("");
+  // Bind buttons
+  list.querySelectorAll(".mist-card").forEach(card => {
+    const mid = card.dataset.mid;
+    const m = MISTAKES.find(x => x.id === mid);
+    card.querySelector('[data-action="drill"]').addEventListener("click", () => {
+      // Jump to Exercises tab, filter to this topic, smart-order it
+      state.activeTab = "exer";
+      state.topic = m.drillTopic || "All topics";
+      state.exerOrder = "smart";
+      state.currentExerIdx = null;
+      saveState(); applyTabUI(); populateTopics(); exerNext();
+    });
+    card.querySelector('[data-action="toggle"]').addEventListener("click", () => {
+      state.fixedMistakes[mid] = !state.fixedMistakes[mid];
+      saveState(); renderMistakes(); updateStats();
+    });
+  });
 }
 
 // Hide speaker row on the English side; show it on the Spanish side.
@@ -3792,12 +4037,17 @@ function updateStats(){
   const total = VOCAB.length;
   const seen = VOCAB.filter(v => progressFor(keyOf(v.es)).lastSeen !== null).length;
   const mastered = VOCAB.filter(v => progressFor(keyOf(v.es)).box >= 5).length;
-  $("#stats").textContent = state.activeTab === "exer"
-    ? `Exercises: ${Object.keys(state.exerProgress).length}/${EXERCISES.length} attempted`
-    : `${seen}/${total} seen · ${mastered} mastered`;
-  $("#progress-fill").style.width = state.activeTab === "exer"
-    ? (Object.keys(state.exerProgress).length / EXERCISES.length * 100).toFixed(1) + "%"
-    : (total ? (mastered/total*100).toFixed(1) + "%" : "0");
+  const fixedCount = Object.keys(state.fixedMistakes || {}).filter(k => state.fixedMistakes[k]).length;
+  if(state.activeTab === "exer"){
+    $("#stats").textContent = `Exercises: ${Object.keys(state.exerProgress).length}/${EXERCISES.length} attempted`;
+    $("#progress-fill").style.width = (Object.keys(state.exerProgress).length / EXERCISES.length * 100).toFixed(1) + "%";
+  } else if(state.activeTab === "mist"){
+    $("#stats").textContent = `Mistakes: ${fixedCount}/${MISTAKES.length} marked fixed`;
+    $("#progress-fill").style.width = (fixedCount / MISTAKES.length * 100).toFixed(1) + "%";
+  } else {
+    $("#stats").textContent = `${seen}/${total} seen · ${mastered} mastered`;
+    $("#progress-fill").style.width = (total ? (mastered/total*100).toFixed(1) + "%" : "0");
+  }
   if($("#stat-total")){
     $("#stat-total").textContent = total;
     $("#stat-seen").textContent = seen;
@@ -4060,6 +4310,7 @@ document.querySelectorAll(".tab").forEach(t => {
     saveState();
     applyTabUI();
     if(state.activeTab === "exer"){ exerNext(); }
+    else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
     else { next(); }
   });
 });
@@ -4232,7 +4483,9 @@ applyAnswerModeUI();
 applyTabUI();
 rebuildVocab();
 populateTopics();
-if(state.activeTab === "exer") exerNext(); else next();
+if(state.activeTab === "exer") exerNext();
+else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
+else next();
 </script>
 </body>
 </html>
