@@ -51,7 +51,9 @@
   .card-face.card-back{transform:rotateY(180deg);}
   .card-face.right{background:#eaf3e2;}
   .card-face.wrong{background:#fde8e6;}
-  .card-lang{position:absolute; top:14px; left:18px; font-size:11px; color:var(--muted); letter-spacing:1.2px; text-transform:uppercase; font-weight:600;}
+  .card-lang{position:absolute; top:14px; left:18px; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; font-weight:700; padding:3px 8px; border-radius:6px;}
+  .card-lang[data-lang="ESPAÑOL"]{background:rgba(196,77,60,0.12); color:var(--accent);}
+  .card-lang[data-lang="ENGLISH"]{background:rgba(61,111,142,0.15); color:var(--blue);}
   .card-box{position:absolute; top:14px; right:18px; font-size:11px; color:var(--muted);}
   .card-box span{display:inline-block; width:7px; height:7px; border-radius:50%; background:#e3d8d2; margin:0 1.5px;}
   .card-box span.on{background:var(--accent);}
@@ -296,6 +298,7 @@
     <!-- Tasks panel: Oriol's emailed exercise & theory links -->
     <div class="tasks-panel" id="tasks-panel">
       <div class="tasks-intro" id="tasks-intro">…</div>
+      <input type="text" id="tasks-search" placeholder="🔍 Search (e.g. artículos, ya/todavía, preposiciones)…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="width:100%; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:14px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none;">
       <div class="tasks-filter" id="tasks-filter"></div>
       <div id="tasks-list"></div>
     </div>
@@ -5030,7 +5033,7 @@ const STORAGE_KEY = "spanish_vocab_v4";
 function defaultState(){
   return {
     cardProgress: {}, exerProgress: {}, session: 0,
-    direction:"mixed", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
+    direction:"es-en", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
     activeTab:"vocab",
     accent:"es-ES", autoSpeak:"on",
     voiceES:"", voiceMX:"",
@@ -5042,6 +5045,7 @@ function defaultState(){
     fixedMistakes:{},      // {mistake_id: true} for ones you've marked solved
     visitedTasks:{},       // {url: true} for opened Oriol links
     tasksKindFilter:"All", // current filter in Tasks tab
+    tasksSearch:"",        // search query in Tasks tab
     currentKey:null, currentDir:"es-en", showingBack:false,
     currentExerIdx:null,
     totalCorrect:0, totalWrong:0, streak:0,
@@ -5051,7 +5055,12 @@ function defaultState(){
 function loadState(){
   try{ const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if(!s) return defaultState();
-    return {...defaultState(), ...s, cardProgress:s.cardProgress||{}, exerProgress:s.exerProgress||{}, customVocab:s.customVocab||[]};
+    const merged = {...defaultState(), ...s, cardProgress:s.cardProgress||{}, exerProgress:s.exerProgress||{}, customVocab:s.customVocab||[]};
+    // One-time migration v17: reset "mixed" direction back to es-en (most users find the language
+    // labels easier to follow when Spanish is always on the front of new cards).
+    if(!s.stateVersion && s.direction === "mixed") merged.direction = "es-en";
+    merged.stateVersion = 17;
+    return merged;
   } catch { return defaultState(); }
 }
 function saveState(){ try{localStorage.setItem(STORAGE_KEY, JSON.stringify(state));}catch{} }
@@ -5340,22 +5349,55 @@ function renderTasks(){
   // Filter + sort: most recent first
   let filtered = TASKS.slice();
   if(activeKind !== "All") filtered = filtered.filter(t => t.kind === activeKind);
+  // Apply search query — case-insensitive, accent-insensitive against display + subject + url + kind
+  const q = (state.tasksSearch || "").trim().toLowerCase();
+  if(q){
+    const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const nq = norm(q);
+    filtered = filtered.filter(t =>
+      norm(t.display).includes(nq) ||
+      norm(t.subject).includes(nq) ||
+      norm(t.kind).includes(nq) ||
+      norm(t.url).includes(nq)
+    );
+  }
   filtered.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 
-  $("#tasks-list").innerHTML = filtered.map((t, i) => {
-    const v = visited[t.url] ? "visited" : "";
-    const kindClass = t.kind.toLowerCase().replace(" ", "-");
-    return `<div class="task-card ${v}" data-url="${escapeHtml(t.url)}">
-      <div class="task-row">
-        <div class="task-title">${escapeHtml(t.display || t.url)}</div>
-        <div class="task-date">${escapeHtml(t.date || "")}</div>
-      </div>
-      <div class="task-row">
-        <span class="task-kind ${kindClass}">${escapeHtml(t.kind)}</span>
-        <span class="task-subj">${escapeHtml(t.subject || "")}</span>
-      </div>
-    </div>`;
-  }).join("");
+  if(filtered.length === 0){
+    $("#tasks-list").innerHTML = `<div style="text-align:center; padding:24px; color:var(--muted); font-size:13px;">No links match your search.<br><small>Try simpler keywords or clear filters above.</small></div>`;
+  } else {
+    $("#tasks-list").innerHTML = filtered.map((t, i) => {
+      const v = visited[t.url] ? "visited" : "";
+      const kindClass = t.kind.toLowerCase().replace(" ", "-");
+      return `<div class="task-card ${v}" data-url="${escapeHtml(t.url)}">
+        <div class="task-row">
+          <div class="task-title">${escapeHtml(t.display || t.url)}</div>
+          <div class="task-date">${escapeHtml(t.date || "")}</div>
+        </div>
+        <div class="task-row">
+          <span class="task-kind ${kindClass}">${escapeHtml(t.kind)}</span>
+          <span class="task-subj">${escapeHtml(t.subject || "")}</span>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  // Wire up the search input (idempotent — re-binds on each render but that's fine)
+  const searchEl = $("#tasks-search");
+  if(searchEl){
+    if(searchEl.value !== (state.tasksSearch || "")) searchEl.value = state.tasksSearch || "";
+    if(!searchEl.dataset.bound){
+      searchEl.dataset.bound = "1";
+      let searchTimer;
+      searchEl.addEventListener("input", e => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          state.tasksSearch = e.target.value;
+          saveState();
+          renderTasks();
+        }, 150);
+      });
+    }
+  }
 
   // Wire up card taps
   $("#tasks-list").querySelectorAll(".task-card").forEach(card => {
@@ -5437,6 +5479,8 @@ function renderCard(){
   $("#back-text").textContent = back;
   $("#front-lang").textContent = fLang;
   $("#back-lang").textContent = bLang;
+  $("#front-lang").setAttribute("data-lang", fLang);
+  $("#back-lang").setAttribute("data-lang", bLang);
   const boxHtml = Array.from({length:5}, (_,i) => `<span class="${i<p.box?'on':''}"></span>`).join("");
   $("#front-box").innerHTML = boxHtml;
   $("#back-box").innerHTML = boxHtml;
