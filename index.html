@@ -142,8 +142,17 @@
   .lesson-card-row{display:flex; justify-content:space-between; align-items:center;}
   .lesson-date{font-size:13px; font-weight:700; color:var(--accent);}
   .lesson-meta{font-size:11px; color:var(--muted);}
-  .lesson-content{font-size:13px; color:var(--ink); line-height:1.55; padding-top:10px; white-space:pre-wrap; word-wrap:break-word; max-height:0; overflow:hidden; transition:max-height 0.3s;}
+  .lesson-content{font-size:13px; color:var(--ink); line-height:1.75; padding-top:10px; white-space:pre-wrap; word-wrap:break-word; max-height:0; overflow:hidden; transition:max-height 0.3s; user-select:text; -webkit-user-select:text;}
   .lesson-card.open .lesson-content{max-height:none; padding-top:10px;}
+  /* Clickable Spanish word in a lesson */
+  .lw{cursor:pointer; padding:1px 2px; border-radius:3px; -webkit-tap-highlight-color:rgba(196,77,60,0.20); transition:background 0.1s;}
+  .lw:active{background:rgba(196,77,60,0.18);}
+  .lw.known{color:var(--green);}
+  .lw.known::after{content:" ✓"; font-size:9px;}
+  .lesson-hint{font-size:11px; color:var(--muted); padding:6px 0 4px; font-style:italic; line-height:1.5;}
+  /* Phrase-selection toolbar that floats when you've selected text */
+  #phrase-fab{position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; padding:11px 18px; border-radius:24px; font-size:13px; font-weight:600; box-shadow:0 4px 16px rgba(0,0,0,0.25); cursor:pointer; display:none; z-index:20;}
+  #phrase-fab.show{display:block;}
   /* Tasks panel */
   .tasks-panel{display:none; width:100%; max-width:600px; flex-direction:column; gap:10px; overflow-y:auto; height:100%; padding-bottom:24px;}
   body.tasks-mode .tasks-panel{display:flex;}
@@ -5277,6 +5286,32 @@ function fmtDateLong(d){
   return parseInt(m[2],10) + " de " + months[parseInt(m[1],10)-1];
 }
 
+// Build a set of vocab keys (Spanish, lowercase) that we already have, so we can
+// mark known words green with a checkmark.
+function getKnownVocabKeys(){
+  const s = new Set();
+  for(const v of BUNDLED_VOCAB){
+    const k = v.es.toLowerCase().trim();
+    s.add(k);
+    s.add(k.replace(/^(el|la|los|las|un|una)\s+/, ""));
+  }
+  for(const v of state.customVocab || []){
+    s.add(v.es.toLowerCase().trim());
+  }
+  return s;
+}
+
+// Wrap each Spanish-looking word in a <span class="lw"> so it can be tapped.
+// Preserves spacing, punctuation, line breaks.
+function wrapWords(text, knownSet){
+  // Split keeping punctuation/whitespace as separate tokens
+  return text.replace(/([A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)/g, (m) => {
+    const lower = m.toLowerCase();
+    const isKnown = knownSet.has(lower);
+    return `<span class="lw${isKnown ? " known" : ""}" data-w="${m.replace(/"/g,"&quot;")}">${m}</span>`;
+  });
+}
+
 function renderClass(){
   // Initialize iframe lazily — only when this tab is opened to save resources
   const iframe = $("#class-iframe");
@@ -5284,25 +5319,87 @@ function renderClass(){
   // Render past lessons (only first time)
   const list = $("#class-past-list");
   if(list.children.length === 0){
+    const knownSet = getKnownVocabKeys();
     // Render newest first
     const sorted = LESSONS.slice().sort((a,b) => (b.date || "").localeCompare(a.date || ""));
     list.innerHTML = sorted.map((l, i) => `
       <div class="lesson-card" data-i="${i}">
         <div class="lesson-card-row">
           <span class="lesson-date">${escapeHtml(fmtDateLong(l.date))}</span>
-          <span class="lesson-meta">${(l.text || "").length} chars · tap to ${i === 0 ? "open" : "expand"}</span>
+          <span class="lesson-meta">tap to ${i === 0 ? "open" : "expand"}</span>
         </div>
-        <div class="lesson-content">${escapeHtml(l.text || "(no content)")}</div>
+        <div class="lesson-hint">Tap a Spanish word to add it to your Vocab. Select multiple words and the bottom button appears for phrases. ✓ = already in your vocab.</div>
+        <div class="lesson-content">${wrapWords(escapeHtml(l.text || "(no content)"), knownSet)}</div>
       </div>
     `).join("");
     list.querySelectorAll(".lesson-card").forEach(card => {
-      card.addEventListener("click", () => card.classList.toggle("open"));
+      // Header row toggles open
+      card.querySelector(".lesson-card-row").addEventListener("click", () => card.classList.toggle("open"));
     });
     // Auto-open the most recent
     const first = list.querySelector(".lesson-card");
     if(first) first.classList.add("open");
+
+    // Delegated: tap a single word → add-to-vocab modal pre-filled with that word.
+    list.addEventListener("click", (e) => {
+      const w = e.target.closest(".lw");
+      if(!w) return;
+      e.stopPropagation();
+      // Don't override text selection of multiple words — if user has a real
+      // selection, let phrase-fab handle it.
+      const sel = window.getSelection();
+      if(sel && sel.toString().trim().length > 0 && sel.toString().trim() !== w.dataset.w) return;
+      openAddFromLesson(w.dataset.w);
+    });
   }
 }
+
+// Open the +Add modal pre-filled with a Spanish word/phrase from a lesson.
+function openAddFromLesson(esText){
+  const text = (esText || "").trim();
+  if(!text) return;
+  $("#add-es").value = text;
+  $("#add-en").value = "";
+  $("#add-lookup-status").textContent = "Looking up…";
+  $("#add-confirm-btn").disabled = true;
+  $("#add-modal-bg").classList.add("open");
+  // Run the lookup
+  setTimeout(() => { $("#add-lookup-btn").click(); }, 60);
+}
+
+// Floating "Add phrase" button when text is selected inside a lesson
+(function setupPhraseFab(){
+  setTimeout(() => {
+    const fab = document.createElement("div");
+    fab.id = "phrase-fab";
+    fab.textContent = "+ Add selected phrase";
+    document.body.appendChild(fab);
+    fab.addEventListener("click", () => {
+      const sel = window.getSelection();
+      const text = sel ? sel.toString().trim() : "";
+      if(!text) return;
+      sel.removeAllRanges();
+      fab.classList.remove("show");
+      openAddFromLesson(text);
+    });
+    function checkSelection(){
+      if(state.activeTab !== "class") return;
+      const sel = window.getSelection();
+      const text = sel ? sel.toString().trim() : "";
+      // Show fab if selection has >=2 words and is inside a lesson-content
+      const anchor = sel && sel.anchorNode;
+      const inLesson = anchor && anchor.parentElement && anchor.parentElement.closest && anchor.parentElement.closest(".lesson-content");
+      if(text && text.split(/\s+/).length >= 2 && inLesson){
+        fab.classList.add("show");
+      } else {
+        fab.classList.remove("show");
+      }
+    }
+    document.addEventListener("selectionchange", checkSelection);
+    document.addEventListener("touchend", checkSelection);
+    document.addEventListener("mouseup", checkSelection);
+  }, 200);
+})();
 
 document.querySelectorAll(".class-tab").forEach(t => {
   t.addEventListener("click", () => {
