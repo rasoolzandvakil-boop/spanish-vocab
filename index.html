@@ -5185,17 +5185,21 @@ function getMasteryBatch(){
   return { ordered, batch, startIdx, endIdx, size };
 }
 
-// Stats about the current batch: how many mastered (box >= 5), how many wrong, how many unseen.
+// Stats about the current batch.
+// MASTERED = box >= 3 (i.e. you got it right at least twice cleanly). Box >= 5 takes
+// 4 correct answers in a row without any wrong, which never happens in normal practice
+// — that's the bug you saw before. Box >= 3 is the honest "you've got it" threshold.
 function getBatchStats(){
   const { batch } = getMasteryBatch();
-  let mastered = 0, wrong = 0, unseen = 0;
+  let mastered = 0, learning = 0, struggling = 0, unseen = 0;
   for(const v of batch){
     const p = progressFor(keyOf(v.es));
-    if(p.box >= 5) mastered++;
-    else if(p.wrong > p.correct) wrong++;
     if(p.lastSeen === null) unseen++;
+    else if(p.box >= 3) mastered++;
+    else if(p.wrong > p.correct) { struggling++; learning++; }
+    else learning++;
   }
-  return { batch, mastered, wrong, unseen, total: batch.length };
+  return { batch, mastered, learning, struggling, unseen, total: batch.length };
 }
 
 function pickNext(){
@@ -5204,17 +5208,26 @@ function pickNext(){
   if(state.vocabOrder === "mastery"){
     const { batch } = getMasteryBatch();
     if(batch.length === 0) return null;
-    // Build pool with weights: unseen=5, wrong=10, due-for-review=3, mastered=0.5
+    // Weights designed to actually GRADUATE words to mastery:
+    //   box=0/null (unseen): 4 — introduce new words steadily
+    //   box=1 (got once wrong or once right): 8 — drill these the hardest
+    //   box=2 (one right, no wrongs): 5 — push toward mastery
+    //   box=3 (mastered by our threshold): 2 — keep fresh
+    //   box=4: 1 — light review
+    //   box=5: 0.3 — rare
+    //   Struggling (more wrong than right): always +6 bonus
     const weights = [];
     const pool = [];
     for(const v of batch){
       const p = progressFor(keyOf(v.es));
       let w;
-      if(p.box >= 5) w = 0.3;                     // mastered: rare review
-      else if(p.lastSeen === null) w = 5;          // unseen
-      else if(p.wrong > p.correct) w = 12;         // struggling
-      else if(p.nextReview <= state.session) w = 4; // due
-      else w = 1;                                  // not due yet but in batch
+      if(p.lastSeen === null) w = 4;
+      else if(p.box >= 5) w = 0.3;
+      else if(p.box >= 4) w = 1;
+      else if(p.box >= 3) w = 2;
+      else if(p.box >= 2) w = 5;
+      else w = 8;  // box 1 — the bread-and-butter drilling tier
+      if(p.wrong > p.correct) w += 6;
       pool.push(v);
       weights.push(w);
     }
@@ -6027,7 +6040,7 @@ function updateMasteryStatus(){
   const el = $("#mastery-status");
   const btn = $("#advance-batch-btn");
   if(!el) return;
-  const { batch, mastered, wrong, unseen, total } = getBatchStats();
+  const { batch, mastered, learning, struggling, unseen, total } = getBatchStats();
   if(total === 0){
     el.textContent = "No words in this batch — try increasing your vocab source or resetting cursor.";
     btn.style.display = "none";
@@ -6037,8 +6050,8 @@ function updateMasteryStatus(){
   const batchNum = (state.masteryBatchIndex || 0) + 1;
   el.innerHTML = `
     <div style="font-size:14px; font-weight:700; color:var(--accent); margin-bottom:6px;">Batch ${batchNum} — words ${(state.masteryBatchIndex||0)*state.masteryBatchSize+1}-${(state.masteryBatchIndex||0)*state.masteryBatchSize+total}</div>
-    <div>${mastered}/${total} mastered (${pct}%)</div>
-    <div style="font-size:12px; color:var(--muted); margin-top:4px;">${unseen} unseen · ${wrong} struggling · threshold to advance: ${Math.round((state.masteryThreshold||0.8)*100)}%</div>
+    <div><b style="color:var(--green);">${mastered}</b> mastered <span style="color:var(--muted);">(2+ correct, box 3+)</span> · <b>${learning}</b> learning · <b>${unseen}</b> unseen</div>
+    <div style="font-size:12px; color:var(--muted); margin-top:4px;">${struggling} struggling · ${pct}% of batch mastered · threshold to advance: ${Math.round((state.masteryThreshold||0.8)*100)}%</div>
   `;
   const ready = (mastered / total) >= (state.masteryThreshold || 0.8);
   btn.style.display = ready ? "block" : "none";
