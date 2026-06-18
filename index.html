@@ -5760,13 +5760,43 @@ function mark(correct){
   const k = state.currentKey;
   if(!k) return;
   const p = progressFor(k);
+  const prevBox = p.box;
   p.lastSeen = state.session;
   if(correct){ p.correct++; state.totalCorrect++; state.streak++; p.box = Math.min(5, p.box+1); }
   else { p.wrong++; state.totalWrong++; state.streak = 0; p.box = 1; }
   p.nextReview = state.session + INTERVALS[p.box - 1];
   state.session++;
   saveState();
+  // Visible feedback for box transitions
+  if(correct){
+    if(prevBox < 3 && p.box >= 3){
+      showToast("🎉 Mastered!", "#5b8a5a");
+    } else if(p.box > prevBox){
+      showToast(`Level ${prevBox} → ${p.box}`, "#c44d3c");
+    }
+  }
   next();
+}
+
+// Small fading toast in the lower-middle. Used to make box-level transitions visible.
+let _toastTimer = null;
+function showToast(text, color){
+  let t = document.getElementById("vocab-toast");
+  if(!t){
+    t = document.createElement("div");
+    t.id = "vocab-toast";
+    t.style.cssText = "position:fixed; bottom:160px; left:50%; transform:translateX(-50%); padding:10px 20px; border-radius:20px; color:white; font-weight:600; font-size:14px; box-shadow:0 4px 16px rgba(0,0,0,0.25); z-index:50; opacity:0; pointer-events:none; transition:opacity 0.3s, transform 0.3s; letter-spacing:0.3px;";
+    document.body.appendChild(t);
+  }
+  t.textContent = text;
+  t.style.background = color || "var(--accent)";
+  t.style.opacity = "1";
+  t.style.transform = "translateX(-50%) translateY(0)";
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => {
+    t.style.opacity = "0";
+    t.style.transform = "translateX(-50%) translateY(8px)";
+  }, 1500);
 }
 
 function normalizeForCompare(s){
