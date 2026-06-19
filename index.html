@@ -61,7 +61,13 @@
   .card-source.class-tag{color:var(--accent); font-weight:600;}
   .card-rank{position:absolute; bottom:12px; right:18px; font-size:10px; color:var(--muted); opacity:0.7;}
   .card-text{font-size:clamp(22px, 6vw, 34px); font-weight:600; line-height:1.25; color:var(--ink); max-width:100%; word-break:break-word;}
-  .card-face.back .card-text{font-weight:500; color:#3a302d;}
+  .card-face.back .card-text{font-weight:500; color:#3a302d; font-size:clamp(17px, 5vw, 24px); line-height:1.4;}
+  .card-face.back .card-text .tr{display:block; padding:2px 0;}
+  .card-face.back .card-text .tr-num{font-size:11px; color:var(--muted); margin-right:4px; font-weight:400;}
+  .card-example{font-size:13px; color:var(--muted); font-style:italic; padding:8px 16px 0; line-height:1.4; max-width:90%;}
+  .card-example .ex-es{color:var(--ink); font-style:italic;}
+  .card-example .ex-en{color:var(--muted); font-style:italic; display:block; font-size:11px; margin-top:2px;}
+  .card-example .ex-loading{color:var(--muted); font-size:11px;}
   /* Speaker buttons on the card: side-by-side ES + MX */
   .speak-row{position:absolute; bottom:38px; left:50%; transform:translateX(-50%); display:flex; gap:10px;}
   .speak-row[hidden]{display:none;}
@@ -272,6 +278,7 @@
           <div class="card-lang" id="back-lang">ENGLISH</div>
           <div class="card-box" id="back-box"></div>
           <div class="card-text" id="back-text">…</div>
+          <div class="card-example" id="back-example"></div>
           <div class="speak-row" id="back-speak-row">
             <button class="speak-btn" data-face="back" data-acc="es-ES" aria-label="Pronounce (Spain)"><span class="spk-icon">🔊</span><span class="spk-lbl">ES</span></button>
             <button class="speak-btn" data-face="back" data-acc="es-MX" aria-label="Pronounce (Mexico)"><span class="spk-icon">🔊</span><span class="spk-lbl">MX</span></button>
@@ -5066,6 +5073,7 @@ function defaultState(){
     masteryBatchSize:300,
     masteryBatchIndex:0,
     masteryThreshold:0.8,   // % of batch that must be box>=5 before unlocking next batch
+    cachedExamples:{},      // {word_key: {es, en} or "__none__"}
     exerOrder:"smart",
     exerCursor:0,
     fixedMistakes:{},      // {mistake_id: true} for ones you've marked solved
@@ -5662,6 +5670,77 @@ function updateSpeakButtons(){
   $("#back-speak-row").hidden = frontIsSpanish;
 }
 
+// === Example-sentence cache ===
+// Fetched once per word from Wiktionary; persisted via state.cachedExamples
+// so the same API call doesn't repeat on subsequent reviews.
+async function fetchExampleFromWiktionary(word){
+  const stripped = (word || "").toLowerCase().trim().replace(/^(el|la|los|las|un|una)\s+/, "").split(/\s+/)[0];
+  if(!stripped) return null;
+  try {
+    const r = await fetch(`https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(stripped)}`);
+    if(!r.ok) return null;
+    const data = await r.json();
+    const entries = data.es || [];
+    for(const e of entries){
+      for(const d of (e.definitions || [])){
+        if(d.examples && d.examples.length){
+          // Take the first non-empty example, strip HTML.
+          for(const ex of d.examples){
+            const clean = ex.replace(/<[^>]+>/g, "").trim();
+            if(clean) return clean;
+          }
+        }
+      }
+    }
+  } catch {}
+  return null;
+}
+
+// MyMemory fallback for translating an example sentence.
+async function translateExample(spanishSentence){
+  try {
+    const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(spanishSentence)}&langpair=es|en`);
+    if(!r.ok) return null;
+    const data = await r.json();
+    const t = data?.responseData?.translatedText;
+    return t ? t.trim() : null;
+  } catch { return null; }
+}
+
+function renderExampleForCard(v){
+  const el = $("#back-example");
+  if(!el) return;
+  const key = keyOf(v.es);
+  const cached = (state.cachedExamples || {})[key];
+  if(cached === "__none__"){
+    el.innerHTML = "";
+    return;
+  }
+  if(cached){
+    el.innerHTML = `<span class="ex-es">↳ ${escapeHtml(cached.es)}</span>${cached.en ? `<span class="ex-en">${escapeHtml(cached.en)}</span>` : ""}`;
+    return;
+  }
+  // Otherwise fetch + cache.
+  el.innerHTML = `<span class="ex-loading">Loading example…</span>`;
+  (async () => {
+    const exEs = await fetchExampleFromWiktionary(v.es);
+    if(!state.cachedExamples) state.cachedExamples = {};
+    if(!exEs){
+      state.cachedExamples[key] = "__none__";
+      saveState();
+      // Only clear if we're still showing this card
+      if(state.currentKey === key) el.innerHTML = "";
+      return;
+    }
+    const exEn = await translateExample(exEs);
+    state.cachedExamples[key] = { es: exEs, en: exEn };
+    saveState();
+    if(state.currentKey === key){
+      el.innerHTML = `<span class="ex-es">↳ ${escapeHtml(exEs)}</span>${exEn ? `<span class="ex-en">${escapeHtml(exEn)}</span>` : ""}`;
+    }
+  })();
+}
+
 let awaitingNext = false;
 function renderCard(){
   if(!state.currentKey || !VOCAB_BY_KEY.has(state.currentKey)) return;
@@ -5671,7 +5750,18 @@ function renderCard(){
   const [front, back] = dir === "es-en" ? [v.es, v.en] : [v.en, v.es];
   const [fLang, bLang] = dir === "es-en" ? ["ESPAÑOL","ENGLISH"] : ["ENGLISH","ESPAÑOL"];
   $("#front-text").textContent = front;
-  $("#back-text").textContent = back;
+  // Multi-translation rendering: split the "back" text by / or ; or ,
+  // and show each as a separate numbered line.
+  const meanings = (back || "").split(/\s*[\/;]\s*/).map(s => s.trim()).filter(Boolean);
+  if(meanings.length <= 1){
+    $("#back-text").textContent = back;
+  } else {
+    $("#back-text").innerHTML = meanings.slice(0, 5).map((m, i) =>
+      `<span class="tr"><span class="tr-num">${i+1}.</span> ${escapeHtml(m)}</span>`
+    ).join("");
+  }
+  // Example sentence: render cached if available; otherwise fetch async
+  renderExampleForCard(v);
   $("#front-lang").textContent = fLang;
   $("#back-lang").textContent = bLang;
   $("#front-lang").setAttribute("data-lang", fLang);
