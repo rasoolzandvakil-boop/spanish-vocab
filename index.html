@@ -112,6 +112,13 @@
   .exer-input:focus{outline:none; border-color:var(--accent);}
   .exer-input.right{border-color:var(--green); background:#eaf3e2;}
   .exer-input.wrong{border-color:var(--red); background:#fde8e6;}
+  /* MCQ option buttons */
+  .mcq-opt{padding:12px 14px; border:1.5px solid rgba(0,0,0,0.12); border-radius:12px; background:#fafafa; color:var(--ink); font-size:15px; font-family:inherit; cursor:pointer; text-align:left; transition:background 0.15s, border-color 0.15s;}
+  .mcq-opt:active{background:rgba(196,77,60,0.08);}
+  .mcq-opt.selected{background:rgba(196,77,60,0.10); border-color:var(--accent);}
+  .mcq-opt.right{background:#eaf3e2; border-color:var(--green); color:var(--green); font-weight:600;}
+  .mcq-opt.wrong{background:#fde8e6; border-color:var(--red); color:var(--red);}
+  .mcq-opt.disabled{pointer-events:none; opacity:0.7;}
   .exer-buttons{display:flex; gap:8px;}
   .exer-btn{flex:1; height:46px; border:none; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; -webkit-appearance:none;}
   .exer-btn.check{background:var(--accent); color:white;}
@@ -339,6 +346,7 @@
         <div class="exer-lesson-date" id="exer-lesson-date" style="font-size:11px; color:var(--muted); margin-top:-8px;"></div>
         <div class="exer-prompt" id="exer-prompt">…</div>
         <input type="text" class="exer-input" id="exer-input" placeholder="Type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div class="exer-options" id="exer-options" style="display:none; flex-direction:column; gap:6px; margin-top:8px;"></div>
         <div class="exer-feedback" id="exer-feedback"></div>
         <div class="exer-buttons">
           <button class="exer-btn skip" id="exer-skip">Skip</button>
@@ -4282,6 +4290,1138 @@ const EXERCISES = [
     "topic": "Sentence completion",
     "type": "translate",
     "lesson_date": "2026-04-06"
+  },
+  {
+    "prompt": "Yo ____ café todas las mañanas.",
+    "options": [
+      "bebo",
+      "bebió",
+      "bebemos",
+      "beberá"
+    ],
+    "answer": "bebo",
+    "topic": "Vocab MCQ — class",
+    "hint": "yo (I) + present tense of beber",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Estoy ____ de esperar — ¡llevo dos horas aquí!",
+    "options": [
+      "harto",
+      "cansado",
+      "contento",
+      "feliz"
+    ],
+    "answer": "harto",
+    "topic": "Vocab MCQ — class",
+    "hint": "Oriol's phrase: estar harto de = fed up with",
+    "type": "mcq",
+    "lesson_date": "2026-06-03"
+  },
+  {
+    "prompt": "____ tres meses que no veo a mi familia.",
+    "options": [
+      "Hace",
+      "Hago",
+      "Hizo",
+      "Hicimos"
+    ],
+    "answer": "Hace",
+    "topic": "Vocab MCQ — class",
+    "hint": "hace + tiempo = X time ago",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi madre siempre ____ por las mañanas.",
+    "options": [
+      "cocinaba",
+      "cocinó",
+      "cocinará",
+      "cocinaría"
+    ],
+    "answer": "cocinaba",
+    "topic": "Vocab MCQ — class",
+    "hint": "habitual past = imperfect",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Ayer ____ al cine con mis amigos.",
+    "options": [
+      "fui",
+      "iba",
+      "voy",
+      "iré"
+    ],
+    "answer": "fui",
+    "topic": "Vocab MCQ — class",
+    "hint": "ayer = completed = preterite of ir",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Tienes ____ caminar a tu izquierda en el cruce.",
+    "options": [
+      "que",
+      "de",
+      "a",
+      "por"
+    ],
+    "answer": "que",
+    "topic": "Vocab MCQ — class",
+    "hint": "tener QUE + infinitive = have to",
+    "type": "mcq",
+    "lesson_date": "2026-05-06"
+  },
+  {
+    "prompt": "____ ____ no he terminado la tarea.",
+    "options": [
+      "Todavía",
+      "Ya",
+      "Después",
+      "Antes"
+    ],
+    "answer": "Todavía",
+    "topic": "Vocab MCQ — class",
+    "hint": "todavía = still (not yet done)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "El reloj ____ es nuevo pero ya está roto.",
+    "options": [
+      "todavía",
+      "ya",
+      "muy",
+      "mucho"
+    ],
+    "answer": "todavía",
+    "topic": "Vocab MCQ — class",
+    "hint": "still vs already (Oriol's lesson)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Cuando llegué, mi amigo ya ____ a México.",
+    "options": [
+      "se había ido",
+      "se va",
+      "se irá",
+      "se iba"
+    ],
+    "answer": "se había ido",
+    "topic": "Vocab MCQ — class",
+    "hint": "past perfect for action before another past action",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ de comer, me lavo las manos.",
+    "options": [
+      "Antes",
+      "Después",
+      "Mientras",
+      "Cuando"
+    ],
+    "answer": "Antes",
+    "topic": "Vocab MCQ — class",
+    "hint": "before eating",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Después ____ trabajar, voy al gimnasio.",
+    "options": [
+      "de",
+      "a",
+      "en",
+      "por"
+    ],
+    "answer": "de",
+    "topic": "Vocab MCQ — class",
+    "hint": "después/antes always need DE",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Me ____ que esa idea no funcionará.",
+    "options": [
+      "parece",
+      "parezco",
+      "parecen",
+      "parecíamos"
+    ],
+    "answer": "parece",
+    "topic": "Vocab MCQ — class",
+    "hint": "me parece + clause",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ mi opinión, deberíamos cambiar el plan.",
+    "options": [
+      "En",
+      "Por",
+      "A",
+      "De"
+    ],
+    "answer": "En",
+    "topic": "Vocab MCQ — class",
+    "hint": "en mi opinión",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Cada vez ____ uso ChatGPT para todo.",
+    "options": [
+      "más",
+      "menos",
+      "ya",
+      "todavía"
+    ],
+    "answer": "más",
+    "topic": "Vocab MCQ — class",
+    "hint": "cada vez más = more and more",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Esta semana ____ mucho trabajo.",
+    "options": [
+      "he tenido",
+      "tuve",
+      "tengo",
+      "tendré"
+    ],
+    "answer": "he tenido",
+    "topic": "Vocab MCQ — class",
+    "hint": "esta semana = present perfect",
+    "type": "mcq",
+    "lesson_date": "2026-04-03"
+  },
+  {
+    "prompt": "Ayer ____ enfermo y no fui al trabajo.",
+    "options": [
+      "estuve",
+      "fui",
+      "era",
+      "estaba"
+    ],
+    "answer": "estaba",
+    "alt": [
+      "estuve"
+    ],
+    "topic": "Vocab MCQ — class",
+    "hint": "description of state in past = imperfect (estaba); preterite (estuve) also possible",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Llevo dos años ____ español.",
+    "options": [
+      "estudiando",
+      "estudiar",
+      "estudio",
+      "estudié"
+    ],
+    "answer": "estudiando",
+    "topic": "Vocab MCQ — class",
+    "hint": "llevar + tiempo + GERUNDIO",
+    "type": "mcq",
+    "lesson_date": "2026-05-04"
+  },
+  {
+    "prompt": "Sigo ____ todos los días por la mañana.",
+    "options": [
+      "corriendo",
+      "correr",
+      "corro",
+      "corrí"
+    ],
+    "answer": "corriendo",
+    "topic": "Vocab MCQ — class",
+    "hint": "seguir + gerundio",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Acabo ____ llegar a la oficina.",
+    "options": [
+      "de",
+      "a",
+      "con",
+      "en"
+    ],
+    "answer": "de",
+    "topic": "Vocab MCQ — class",
+    "hint": "acabar DE + infinitive = to have just",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Estoy a punto ____ salir de casa.",
+    "options": [
+      "de",
+      "a",
+      "para",
+      "en"
+    ],
+    "answer": "de",
+    "topic": "Vocab MCQ — class",
+    "hint": "a punto DE + infinitive = about to",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ día tuvo un ritmo lento.",
+    "options": [
+      "El",
+      "La",
+      "Los",
+      "Un"
+    ],
+    "answer": "El",
+    "topic": "Vocab MCQ — articles",
+    "hint": "día is masculine despite ending in -a",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Voy a ____ universidad por la tarde.",
+    "options": [
+      "la",
+      "el",
+      "una",
+      "los"
+    ],
+    "answer": "la",
+    "topic": "Vocab MCQ — articles",
+    "hint": "la universidad — feminine",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Yo soy ____ economista.",
+    "options": [
+      "",
+      "un",
+      "una",
+      "el"
+    ],
+    "answer": "",
+    "topic": "Vocab MCQ — articles",
+    "hint": "NO article: profession after ser without qualifier",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Soy ____ buen profesor.",
+    "options": [
+      "un",
+      "el",
+      "una",
+      "sin"
+    ],
+    "answer": "un",
+    "topic": "Vocab MCQ — articles",
+    "hint": "WITH qualifier (buen) = use 'un'",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Vivo en ____ Estados Unidos desde 2018.",
+    "options": [
+      "los",
+      "las",
+      "el",
+      "sin"
+    ],
+    "answer": "los",
+    "topic": "Vocab MCQ — articles",
+    "hint": "some country names take definite article",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ problema no es difícil de resolver.",
+    "options": [
+      "El",
+      "La",
+      "Los",
+      "Un"
+    ],
+    "answer": "El",
+    "topic": "Vocab MCQ — articles",
+    "hint": "problema = masculine (-ma)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ agua está fría — ten cuidado.",
+    "options": [
+      "El",
+      "La",
+      "Los",
+      "Las"
+    ],
+    "answer": "El",
+    "topic": "Vocab MCQ — articles",
+    "hint": "singular feminine with stressed á → use 'el'",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi hermano ____ médico desde hace 10 años.",
+    "options": [
+      "es",
+      "está",
+      "fue",
+      "estuvo"
+    ],
+    "answer": "es",
+    "topic": "Vocab MCQ — ser/estar",
+    "hint": "profession = ser",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "La fiesta ____ en mi casa esta noche.",
+    "options": [
+      "es",
+      "está",
+      "sea",
+      "estaba"
+    ],
+    "answer": "es",
+    "topic": "Vocab MCQ — ser/estar",
+    "hint": "event taking place = ser",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi casa ____ en la calle Mayor.",
+    "options": [
+      "está",
+      "es",
+      "fue",
+      "sea"
+    ],
+    "answer": "está",
+    "topic": "Vocab MCQ — ser/estar",
+    "hint": "location = estar",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "La sopa ____ muy caliente, ten cuidado.",
+    "options": [
+      "está",
+      "es",
+      "ser",
+      "fue"
+    ],
+    "answer": "está",
+    "topic": "Vocab MCQ — ser/estar",
+    "hint": "temporary state = estar",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Ella ____ alta y delgada.",
+    "options": [
+      "es",
+      "está",
+      "ser",
+      "estaba"
+    ],
+    "answer": "es",
+    "topic": "Vocab MCQ — ser/estar",
+    "hint": "physical characteristic = ser",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mientras yo ____ , sonó el teléfono.",
+    "options": [
+      "leía",
+      "leí",
+      "leeré",
+      "leería"
+    ],
+    "answer": "leía",
+    "topic": "Vocab MCQ — past tenses",
+    "hint": "background action interrupted = imperfect",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "El año pasado ____ tres veces a Madrid.",
+    "options": [
+      "fui",
+      "iba",
+      "voy",
+      "iré"
+    ],
+    "answer": "fui",
+    "topic": "Vocab MCQ — past tenses",
+    "hint": "specific past events = preterite",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Los platos del restaurante ____ deliciosos.",
+    "options": [
+      "eran",
+      "fueron",
+      "son",
+      "están"
+    ],
+    "answer": "eran",
+    "alt": [
+      "fueron"
+    ],
+    "topic": "Vocab MCQ — past tenses",
+    "hint": "description of taste = imperfect (both 'eran' and 'fueron' are accepted)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Yo ____ con tristeza la noticia.",
+    "options": [
+      "recibí",
+      "recibía",
+      "recibo",
+      "reciba"
+    ],
+    "answer": "recibí",
+    "topic": "Vocab MCQ — past tenses",
+    "hint": "specific completed event = preterite",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Cuando era niño, ____ al parque cada domingo.",
+    "options": [
+      "iba",
+      "fui",
+      "iré",
+      "vaya"
+    ],
+    "answer": "iba",
+    "topic": "Vocab MCQ — past tenses",
+    "hint": "habit in childhood = imperfect",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Voy ____ Madrid el viernes.",
+    "options": [
+      "a",
+      "en",
+      "de",
+      "por"
+    ],
+    "answer": "a",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "motion to a place = a",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Vivo ____ Buenos Aires desde 2010.",
+    "options": [
+      "en",
+      "a",
+      "de",
+      "por"
+    ],
+    "answer": "en",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "location = en",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Estudio español ____ poder hablar con mi familia.",
+    "options": [
+      "para",
+      "por",
+      "de",
+      "con"
+    ],
+    "answer": "para",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "para + infinitive = in order to",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Gracias ____ tu ayuda.",
+    "options": [
+      "por",
+      "para",
+      "de",
+      "con"
+    ],
+    "answer": "por",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "gracias POR",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Este regalo es ____ ti.",
+    "options": [
+      "para",
+      "por",
+      "de",
+      "con"
+    ],
+    "answer": "para",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "recipient = para",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Camino ____ el parque todas las mañanas.",
+    "options": [
+      "por",
+      "para",
+      "con",
+      "sin"
+    ],
+    "answer": "por",
+    "topic": "Vocab MCQ — prepositions",
+    "hint": "through / along = por",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "¿Compraste el libro? — Sí, ____ compré ayer.",
+    "options": [
+      "lo",
+      "la",
+      "le",
+      "les"
+    ],
+    "answer": "lo",
+    "topic": "Vocab MCQ — pronouns",
+    "hint": "el libro = masc. sg. direct object → lo",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "¿Tienes las llaves? — Sí, ____ tengo aquí.",
+    "options": [
+      "las",
+      "los",
+      "la",
+      "le"
+    ],
+    "answer": "las",
+    "topic": "Vocab MCQ — pronouns",
+    "hint": "las llaves = fem. pl. direct object → las",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Le dije la verdad a mi madre → ____ ____ dije.",
+    "options": [
+      "Se la",
+      "Le la",
+      "La le",
+      "Se le"
+    ],
+    "answer": "Se la",
+    "topic": "Vocab MCQ — pronouns",
+    "hint": "le + la → se la",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "¿A quién hablas? — ____ hablo a mi jefe.",
+    "options": [
+      "Le",
+      "Lo",
+      "La",
+      "Les"
+    ],
+    "answer": "Le",
+    "topic": "Vocab MCQ — pronouns",
+    "hint": "hablar A alguien = indirect object le",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi hermana es más alta ____ su novio.",
+    "options": [
+      "que",
+      "de",
+      "como",
+      "tan"
+    ],
+    "answer": "que",
+    "topic": "Vocab MCQ — comparison",
+    "hint": "standard comparison: más X que Y",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Tengo más libros ____ ____ ____ puedo leer.",
+    "options": [
+      "de los que",
+      "de lo que",
+      "que",
+      "de los cuales"
+    ],
+    "answer": "de los que",
+    "topic": "Vocab MCQ — comparison",
+    "hint": "clause comparison with plural masc. noun → de los que",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Es más difícil ____ ____ ____ pensaba.",
+    "options": [
+      "de lo que",
+      "que",
+      "como",
+      "tan"
+    ],
+    "answer": "de lo que",
+    "topic": "Vocab MCQ — comparison",
+    "hint": "clause comparison: de lo que",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Soy tan alto ____ mi padre.",
+    "options": [
+      "como",
+      "que",
+      "de",
+      "cómo"
+    ],
+    "answer": "como",
+    "topic": "Vocab MCQ — comparison",
+    "hint": "equality: tan X como Y",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Hay menos ____ 10 personas en la sala.",
+    "options": [
+      "de",
+      "que",
+      "como",
+      "tan"
+    ],
+    "answer": "de",
+    "topic": "Vocab MCQ — comparison",
+    "hint": "with number: menos DE",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi padre ____ por el ruido de los vecinos.",
+    "options": [
+      "se enfadó",
+      "se cocinó",
+      "se compró",
+      "se durmió"
+    ],
+    "answer": "se enfadó",
+    "topic": "Vocab MCQ — daily",
+    "hint": "to get angry = enfadarse",
+    "type": "mcq",
+    "lesson_date": "2026-06-16"
+  },
+  {
+    "prompt": "Antes de salir, voy a ____ — necesito estar presentable.",
+    "options": [
+      "arreglarme",
+      "arreglar",
+      "arreglarte",
+      "arreglarse"
+    ],
+    "answer": "arreglarme",
+    "topic": "Vocab MCQ — daily",
+    "hint": "yo → me; arreglarse = get yourself ready",
+    "type": "mcq",
+    "lesson_date": "2026-06-03"
+  },
+  {
+    "prompt": "Voy a ____ con un café antes de la reunión.",
+    "options": [
+      "respirar",
+      "relajar",
+      "cocinar",
+      "trabajar"
+    ],
+    "answer": "relajar",
+    "alt": [
+      "respirar"
+    ],
+    "topic": "Vocab MCQ — daily",
+    "hint": "recently from your lessons",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ , me siento bastante cansado.",
+    "options": [
+      "Últimamente",
+      "Pronto",
+      "Mañana",
+      "Ayer"
+    ],
+    "answer": "Últimamente",
+    "topic": "Vocab MCQ — daily",
+    "hint": "recently = últimamente",
+    "type": "mcq",
+    "lesson_date": "2026-06-03"
+  },
+  {
+    "prompt": "Mi hermano ____ a un nuevo trabajo en Madrid.",
+    "options": [
+      "pertenece",
+      "sirve",
+      "quita",
+      "cierra"
+    ],
+    "answer": "pertenece",
+    "topic": "Vocab MCQ — daily",
+    "hint": "to belong = pertenecer",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Voy a ____ un regalo a mi madre por su cumpleaños.",
+    "options": [
+      "regalar",
+      "cocinar",
+      "trabajar",
+      "romper"
+    ],
+    "answer": "regalar",
+    "topic": "Vocab MCQ — daily",
+    "hint": "to gift = regalar",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Ella y yo nos ____ mucho — somos casi iguales.",
+    "options": [
+      "parecemos",
+      "parece",
+      "parecen",
+      "pareces"
+    ],
+    "answer": "parecemos",
+    "topic": "Vocab MCQ — daily",
+    "hint": "nosotros → nos parecemos (reflexive)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Necesito ____ el grifo del baño — gotea.",
+    "options": [
+      "arreglar",
+      "romper",
+      "comprar",
+      "vender"
+    ],
+    "answer": "arreglar",
+    "topic": "Vocab MCQ — daily",
+    "hint": "to fix = arreglar",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ 2 semanas tengo vacaciones.",
+    "options": [
+      "Dentro de",
+      "Hace",
+      "Desde hace",
+      "En"
+    ],
+    "answer": "Dentro de",
+    "topic": "Vocab MCQ — daily",
+    "hint": "In 2 weeks time = dentro de",
+    "type": "mcq",
+    "lesson_date": "2026-06-03"
+  },
+  {
+    "prompt": "____ ____ ____ mucho tiempo que no llueve.",
+    "options": [
+      "Hace",
+      "Desde",
+      "Llevamos",
+      "Dentro de"
+    ],
+    "answer": "Hace",
+    "topic": "Vocab MCQ — daily",
+    "hint": "It has been a long time = hace mucho tiempo que",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Espero que mañana ____ buen tiempo.",
+    "options": [
+      "haga",
+      "hace",
+      "hacía",
+      "hará"
+    ],
+    "answer": "haga",
+    "topic": "Vocab MCQ — subjunctive",
+    "hint": "esperar que → subjunctive",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Cuando ____ a casa, te llamo.",
+    "options": [
+      "llegue",
+      "llego",
+      "llegué",
+      "llegaré"
+    ],
+    "answer": "llegue",
+    "topic": "Vocab MCQ — subjunctive",
+    "hint": "cuando + future event = subjunctive",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "No creo que él ____ razón.",
+    "options": [
+      "tenga",
+      "tiene",
+      "tuvo",
+      "tendrá"
+    ],
+    "answer": "tenga",
+    "topic": "Vocab MCQ — subjunctive",
+    "hint": "no creer que → subjunctive",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Quiero que tú ____ con nosotros.",
+    "options": [
+      "vengas",
+      "vienes",
+      "viniste",
+      "vendrás"
+    ],
+    "answer": "vengas",
+    "topic": "Vocab MCQ — subjunctive",
+    "hint": "querer que → subjunctive",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Es importante que ____ temprano.",
+    "options": [
+      "lleguemos",
+      "llegamos",
+      "llegamos",
+      "llegamos"
+    ],
+    "answer": "lleguemos",
+    "topic": "Vocab MCQ — subjunctive",
+    "hint": "impersonal expression + que = subjunctive",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "No es guerra ____ un ataque.",
+    "options": [
+      "sino",
+      "pero",
+      "mas",
+      "aunque"
+    ],
+    "answer": "sino",
+    "topic": "Vocab MCQ — connectors",
+    "hint": "replacement after negation = sino",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Estoy cansado ____ feliz.",
+    "options": [
+      "pero",
+      "sino",
+      "mas",
+      "aunque"
+    ],
+    "answer": "pero",
+    "topic": "Vocab MCQ — connectors",
+    "hint": "contrast adding = pero",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ ____ mi opinión, esto no es ético.",
+    "options": [
+      "En",
+      "A",
+      "Por",
+      "De"
+    ],
+    "answer": "En",
+    "topic": "Vocab MCQ — connectors",
+    "hint": "en mi opinión",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ tu ayuda, no podría haberlo hecho.",
+    "options": [
+      "Sin",
+      "Con",
+      "Por",
+      "Sino"
+    ],
+    "answer": "Sin",
+    "topic": "Vocab MCQ — connectors",
+    "hint": "without your help",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ ____ tu pregunta, no lo sé exactamente.",
+    "options": [
+      "Respecto a",
+      "Sobre",
+      "Por",
+      "Para"
+    ],
+    "answer": "Respecto a",
+    "topic": "Vocab MCQ — connectors",
+    "hint": "regarding your question",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ ____ ____ (every other day) voy al gimnasio.",
+    "options": [
+      "Día sí y día no",
+      "Todos los días",
+      "Una vez al mes",
+      "Cada semana"
+    ],
+    "answer": "Día sí y día no",
+    "topic": "Vocab MCQ — time",
+    "hint": "every other day idiom",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "¿____ ____ ____ tiempo trabajas aquí?",
+    "options": [
+      "Desde hace",
+      "Hace",
+      "Por",
+      "Dentro de"
+    ],
+    "answer": "Desde hace",
+    "topic": "Vocab MCQ — time",
+    "hint": "asking for duration: desde hace",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ ____ ____ (a few minutes) salgo.",
+    "options": [
+      "Dentro de unos minutos",
+      "Hace unos minutos",
+      "En unos minutos",
+      "Desde unos minutos"
+    ],
+    "answer": "Dentro de unos minutos",
+    "alt": [
+      "En unos minutos"
+    ],
+    "topic": "Vocab MCQ — time",
+    "hint": "future moment = dentro de / en",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Estoy ____ — necesito comer algo.",
+    "options": [
+      "embarazada",
+      "hambriento",
+      "muy bien",
+      "listo"
+    ],
+    "answer": "hambriento",
+    "topic": "Vocab MCQ — false friends",
+    "hint": "embarazada means pregnant, not embarrassed!",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Voy a ____ a mi profesor por consejo.",
+    "options": [
+      "preguntar",
+      "cuestionar",
+      "ordenar",
+      "invitar"
+    ],
+    "answer": "preguntar",
+    "topic": "Vocab MCQ — false friends",
+    "hint": "to ask a question = preguntar",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "____ ____ mi amigo a comer.",
+    "options": [
+      "Invité a",
+      "Asistí",
+      "Apuntí",
+      "Consideré"
+    ],
+    "answer": "Invité a",
+    "topic": "Vocab MCQ — false friends",
+    "hint": "to invite = invitar (asistir = to attend)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Soy ____ — no soy muy alto.",
+    "options": [
+      "bajo",
+      "más bajo",
+      "corto",
+      "abajo"
+    ],
+    "answer": "bajo",
+    "topic": "Vocab MCQ — false friends",
+    "hint": "short person = bajo (corto = brief)",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
+  },
+  {
+    "prompt": "Mi madre está ____ con mi hermano.",
+    "options": [
+      "enojada",
+      "enojado",
+      "contenta",
+      "cocinada"
+    ],
+    "answer": "enojada",
+    "topic": "Vocab MCQ — false friends",
+    "hint": "madre is feminine — adjective agrees",
+    "type": "mcq",
+    "lesson_date": "2026-05-15"
   }
 ];
 const MISTAKES = [
@@ -6090,13 +7230,35 @@ function exerNext(){
   $("#exer-check").classList.add("check");
   $("#exer-hint").style.display = "none";
   if(ex.hint){ $("#exer-hint").textContent = "Hint: " + ex.hint; $("#exer-hint").style.display = "block"; }
+  // MCQ rendering: show options as buttons, hide the typed-input
+  const optsEl = $("#exer-options");
+  if(ex.type === "mcq" && Array.isArray(ex.options) && ex.options.length){
+    $("#exer-input").style.display = "none";
+    optsEl.style.display = "flex";
+    optsEl.innerHTML = ex.options.map((o, i) => `<button class="mcq-opt" data-opt="${i}">${escapeHtml(o || "(blank)")}</button>`).join("");
+    optsEl.querySelectorAll(".mcq-opt").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(exerAwaiting) return;
+        optsEl.querySelectorAll(".mcq-opt").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        // Auto-check on click for MCQ
+        setTimeout(() => checkExercise(), 50);
+      });
+    });
+    $("#exer-check").style.display = "none";  // selecting an option auto-checks
+  } else {
+    $("#exer-input").style.display = "";
+    optsEl.style.display = "none";
+    optsEl.innerHTML = "";
+    $("#exer-check").style.display = "";
+  }
   // Show speaker if there's Spanish in the prompt
   const spanish = extractSpanishFromPrompt(ex.prompt);
   $("#exer-speak").hidden = !spanish;
   $("#exer-speak").dataset.spanish = spanish || "";
   $("#exer-speak").classList.remove("playing");
   exerAwaiting = false;
-  setTimeout(()=>$("#exer-input").focus(), 50);
+  if(ex.type !== "mcq") setTimeout(()=>$("#exer-input").focus(), 50);
   updateStats();
 }
 
@@ -6104,20 +7266,37 @@ function checkExercise(){
   const ex = EXERCISES[state.currentExerIdx];
   if(!ex) return;
   if(exerAwaiting){ exerNext(); return; }
-  const typed = $("#exer-input").value.trim();
   const accepted = [ex.answer, ...(ex.alt || [])];
-  const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[.,;:!?¿¡"']/g,"").replace(/\s+/g," ").trim();
-  const tn = norm(typed);
-  const isRight = accepted.some(a => norm(a) === tn);
-  $("#exer-input").disabled = true;
-  $("#exer-input").classList.add(isRight ? "right" : "wrong");
+  const norm = s => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[.,;:!?¿¡"']/g,"").replace(/\s+/g," ").trim();
+  let typed, isRight;
+  if(ex.type === "mcq" && Array.isArray(ex.options)){
+    const selected = $("#exer-options").querySelector(".mcq-opt.selected");
+    if(!selected) return;  // need to pick one
+    const idx = parseInt(selected.dataset.opt, 10);
+    typed = ex.options[idx];
+    isRight = accepted.some(a => norm(a) === norm(typed));
+    // Visually mark the buttons
+    $("#exer-options").querySelectorAll(".mcq-opt").forEach((b, i) => {
+      b.classList.add("disabled");
+      if(accepted.some(a => norm(a) === norm(ex.options[i]))) b.classList.add("right");
+      else if(i === idx && !isRight) b.classList.add("wrong");
+    });
+  } else {
+    typed = $("#exer-input").value.trim();
+    const tn = norm(typed);
+    isRight = accepted.some(a => norm(a) === tn);
+  }
+  if(ex.type !== "mcq"){
+    $("#exer-input").disabled = true;
+    $("#exer-input").classList.add(isRight ? "right" : "wrong");
+  }
   $("#exer-card").classList.add(isRight ? "right" : "wrong");
   if(isRight){
     $("#exer-feedback").innerHTML = "Correct ✓";
     $("#exer-feedback").className = "exer-feedback right";
     state.exerProgress[state.currentExerIdx] = "right";
   } else {
-    $("#exer-feedback").innerHTML = `<b>Answer:</b> ${escapeHtml(ex.answer)}`;
+    $("#exer-feedback").innerHTML = `<b>Answer:</b> ${escapeHtml(ex.answer || "(blank)")}`;
     $("#exer-feedback").className = "exer-feedback wrong";
     state.exerProgress[state.currentExerIdx] = "wrong";
   }
