@@ -157,6 +157,15 @@
   .lesson-meta{font-size:11px; color:var(--muted);}
   .lesson-content{font-size:13px; color:var(--ink); line-height:1.75; padding-top:10px; white-space:pre-wrap; word-wrap:break-word; max-height:0; overflow:hidden; transition:max-height 0.3s; user-select:text; -webkit-user-select:text;}
   .lesson-card.open .lesson-content{max-height:none; padding-top:10px;}
+  /* Ask Claude box */
+  .ai-box{display:flex; flex-direction:column; gap:8px; background:rgba(196,77,60,0.06); border:1px solid rgba(196,77,60,0.22); border-radius:12px; padding:10px; flex-shrink:0;}
+  .ai-row{display:flex; gap:8px;}
+  .ai-q{flex:1; min-width:0; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:14px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none;}
+  .ai-ask{flex-shrink:0; padding:0 18px; border:none; border-radius:10px; background:var(--accent); color:#fff; font-weight:600; font-size:14px; cursor:pointer; font-family:inherit;}
+  .ai-ask:disabled{opacity:0.5; cursor:default;}
+  .ai-answer{font-size:13px; line-height:1.65; color:var(--ink); display:none; background:var(--card-bg); border-radius:10px; padding:0;}
+  .ai-answer.show{display:block; padding:10px 12px;}
+  .ai-answer .ai-cite{color:var(--accent); font-weight:600;}
   /* Lesson search */
   .class-search{width:100%; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:14px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none; flex-shrink:0;}
   #class-search-info{font-size:12px; color:var(--muted); padding:2px 2px 0; min-height:14px;}
@@ -337,7 +346,14 @@
         </div>
       </div>
       <div class="class-past" id="class-past">
-        <input type="text" id="class-search" class="class-search" placeholder="🔍 Search lessons for a word or phrase…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div class="ai-box" id="ai-box">
+          <div class="ai-row">
+            <input type="text" id="ai-q" class="ai-q" placeholder="🤖 Ask Claude about your lessons…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button class="ai-ask" id="ai-ask">Ask</button>
+          </div>
+          <div class="ai-answer" id="ai-answer"></div>
+        </div>
+        <input type="text" id="class-search" class="class-search" placeholder="🔍 Keyword search lessons…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <div id="class-search-info"></div>
         <div id="class-past-list"></div>
       </div>
@@ -450,6 +466,12 @@
       <div class="modal-label">Mastery progress</div>
       <div id="mastery-status" style="font-size:13px; color:var(--ink); line-height:1.5; background:var(--card-bg); border-radius:10px; padding:10px 12px;">…</div>
       <button class="primary-btn" id="advance-batch-btn" style="background:var(--green); display:none;">→ Advance to next 300</button>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">AI assistant (Ask Claude)</div>
+      <input type="text" id="ai-url-input" placeholder="Cloudflare Worker URL (https://…workers.dev)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="width:100%; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:13px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none; margin-bottom:6px;">
+      <input type="text" id="ai-token-input" placeholder="App token (optional)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="width:100%; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:13px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none;">
+      <div class="exer-hint" style="display:block; margin-top:6px;">Powers the “Ask Claude about your lessons” box in Class → Past lessons. One-time setup: see AI-SETUP.md in the repo. Your Anthropic key stays in Cloudflare — never in this app.</div>
     </div>
     <div class="modal-section">
       <div class="modal-label">Default accent (used for auto-speak)</div>
@@ -5854,6 +5876,7 @@ function defaultState(){
     currentExerIdx:null,
     totalCorrect:0, totalWrong:0, streak:0,
     customVocab:[],
+    aiUrl:"", aiToken:"",
   };
 }
 function loadState(){
@@ -6375,6 +6398,58 @@ function filterLessons(q){
   if(info) info.textContent = matched.length
     ? `${matched.length} lesson${matched.length > 1 ? "s" : ""} about “${label}” — most relevant first`
     : `Nothing found for “${label}”. Try a simpler keyword.`;
+}
+
+// ===== Ask Claude about your lessons (via the user's Cloudflare Worker proxy) =====
+function renderAiText(t){
+  let h = escapeHtml(t || "");
+  h = h.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  h = h.replace(/\((\d{4}-\d{2}-\d{2})\)/g, '(<span class="ai-cite">$1</span>)');
+  h = h.replace(/\n/g, "<br>");
+  return h;
+}
+let aiBusy = false;
+async function askClaude(){
+  const qEl = document.getElementById("ai-q");
+  const ans = document.getElementById("ai-answer");
+  const btn = document.getElementById("ai-ask");
+  if(!qEl || !ans) return;
+  const q = qEl.value.trim();
+  if(!q || aiBusy) return;
+  ans.classList.add("show");
+  if(!state.aiUrl){
+    ans.innerHTML = "⚙ First add your Cloudflare Worker URL in <b>Settings → AI assistant</b>. One-time setup is in <b>AI-SETUP.md</b> in the repo.";
+    return;
+  }
+  aiBusy = true; if(btn){ btn.disabled = true; btn.textContent = "…"; }
+  ans.textContent = "Thinking…";
+  try {
+    const lessonsCtx = LESSONS.slice()
+      .sort((a,b) => (b.date || "").localeCompare(a.date || ""))
+      .map(l => `### Lesson ${l.date}\n${l.text || ""}`).join("\n\n");
+    const system = "You are a warm, concise Spanish tutor helping a student review their OWN class notes. " +
+      "Their past lesson notes (mixed Spanish and English, newest first) are provided. When you answer: " +
+      "cite the relevant lesson date(s) in parentheses like (2026-06-18); quote the exact phrase from the notes when helpful; " +
+      "explain any grammar simply with one example; keep it short. If the notes don't cover the question, say so briefly and then answer from general Spanish knowledge.";
+    const userMsg = `My lesson notes:\n\n${lessonsCtx}\n\n---\nQuestion: ${q}`;
+    const headers = { "Content-Type": "application/json" };
+    if(state.aiToken) headers["X-App-Token"] = state.aiToken;
+    const r = await fetch(state.aiUrl, {
+      method: "POST", headers,
+      body: JSON.stringify({ system, max_tokens: 1024, messages: [{ role: "user", content: userMsg }] })
+    });
+    let data = {};
+    try { data = await r.json(); } catch {}
+    if(!r.ok || data.error){
+      ans.innerHTML = "⚠️ " + escapeHtml(String(data.error || ("Error " + r.status))) +
+        (r.status === 401 ? " — check your App token in Settings." : "");
+    } else {
+      ans.innerHTML = renderAiText(data.text || "(no answer returned)");
+    }
+  } catch(e){
+    ans.innerHTML = "⚠️ Couldn't reach your AI worker. Check the URL in Settings. (" + escapeHtml(e.message) + ")";
+  }
+  aiBusy = false; if(btn){ btn.disabled = false; btn.textContent = "Ask"; }
 }
 
 // Open the +Add modal pre-filled with a Spanish word/phrase from a lesson.
@@ -6925,6 +7000,19 @@ $("#miss-btn").addEventListener("click", () => { if(!state.showingBack) flip(); 
 $("#hit-btn").addEventListener("click", () => { if(!state.showingBack) flip(); setTimeout(()=>mark(true), 200); });
 $("#shuffle-btn").addEventListener("click", () => state.activeTab === "exer" ? exerNext() : next());
 $("#back-btn").addEventListener("click", goBack);
+
+// Ask Claude box
+(function(){
+  const ask = document.getElementById("ai-ask");
+  const q = document.getElementById("ai-q");
+  if(ask) ask.addEventListener("click", askClaude);
+  if(q) q.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); askClaude(); } });
+  // AI settings inputs
+  const url = document.getElementById("ai-url-input");
+  const tok = document.getElementById("ai-token-input");
+  if(url){ url.value = state.aiUrl || ""; url.addEventListener("input", () => { state.aiUrl = url.value.trim(); saveState(); }); }
+  if(tok){ tok.value = state.aiToken || ""; tok.addEventListener("input", () => { state.aiToken = tok.value.trim(); saveState(); }); }
+})();
 
 // === Exercises ===
 function getExercisePool(){
