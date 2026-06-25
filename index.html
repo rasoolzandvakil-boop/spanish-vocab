@@ -219,6 +219,12 @@
   .action-btn.miss{background:#fde8e6; color:var(--red);}
   .action-btn.hit{background:#e3efd9; color:var(--green);}
 
+  /* Mode pill (shows current direction + answer mode in Vocab; tap to change) */
+  .mode-pill{margin-top:5px; align-self:center; padding:3px 11px; border:1px solid rgba(196,77,60,0.30); background:rgba(196,77,60,0.07); color:var(--accent); border-radius:13px; font-size:11px; font-weight:600; letter-spacing:0.3px; cursor:pointer; font-family:inherit; display:none; white-space:nowrap;}
+  body:not(.exer-mode):not(.mist-mode):not(.tasks-mode):not(.class-mode) .mode-pill{display:inline-block;}
+  .vstart-big{display:flex; flex-direction:column; gap:8px;}
+  .vstart-big .seg{padding:14px 10px; font-size:14px;}
+
   /* Modal */
   .modal-bg{position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:10; opacity:0; pointer-events:none; transition:opacity 0.25s; display:flex; align-items:flex-end; justify-content:center;}
   .modal-bg.open{opacity:1; pointer-events:auto;}
@@ -256,6 +262,7 @@
     <div class="header-mid">
       <div class="stats" id="stats">Loading…</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <button class="mode-pill" id="mode-pill" type="button" aria-label="Change practice direction or answer mode"></button>
     </div>
     <button class="icon-btn add" id="add-btn" aria-label="Add words">+</button>
     <button class="icon-btn" id="shuffle-btn" aria-label="Skip">↷</button>
@@ -360,6 +367,30 @@
     <button class="action-btn miss" id="miss-btn">✕ Didn't know</button>
     <button class="action-btn hit" id="hit-btn">✓ Knew it</button>
   </footer>
+</div>
+
+<!-- Vocab start chooser -->
+<div class="modal-bg" id="vocab-start-bg">
+  <div class="modal">
+    <h2>Choose your practice</h2>
+    <div class="modal-section">
+      <div class="modal-label">Which way do you want to translate?</div>
+      <div class="seg-group vstart-big" id="vstart-dir-group">
+        <button class="seg" data-vsdir="es-en">🇪🇸 Spanish → English 🇬🇧</button>
+        <button class="seg" data-vsdir="en-es">🇬🇧 English → Spanish 🇪🇸</button>
+        <button class="seg" data-vsdir="mixed">🔀 Mixed — both directions</button>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">How do you want to answer?</div>
+      <div class="seg-group" id="vstart-amode-group">
+        <button class="seg" data-vsamode="tap">👆 Tap to flip the card</button>
+        <button class="seg" data-vsamode="type">⌨️ Type the answer</button>
+      </div>
+      <div class="exer-hint" style="display:block; margin-top:6px;">Typing is checked leniently — case, accents, articles (a/the/el/la) and any of several listed meanings all count.</div>
+    </div>
+    <button class="primary-btn" id="vstart-go-btn">Start practicing →</button>
+  </div>
 </div>
 
 <!-- Settings -->
@@ -5858,10 +5889,14 @@ function rebuildVocab(){
 
 function progressFor(key){
   if(!state.cardProgress[key]){
-    state.cardProgress[key] = {box:1, nextReview:0, lastSeen:null, correct:0, wrong:0};
+    state.cardProgress[key] = {box:1, nextReview:0, lastSeen:null, correct:0, wrong:0, cd:{}};
   }
   return state.cardProgress[key];
 }
+// Per-direction correct count ("es-en" / "en-es"). Once you answer a word right
+// twice in a given direction it is heavily deprioritized for THAT direction, so
+// you progress through new words instead of re-seeing ones you already know.
+function dirCorrect(p, dir){ return (p && p.cd && p.cd[dir]) || 0; }
 const INTERVALS = [1,2,5,12,30];
 
 // Tier rank: A1 (CEFR) > A2 (CEFR) > essential (CORPES) > high > common > untiered
@@ -5957,16 +5992,19 @@ function pickNext(){
     //   Struggling (more wrong than right): always +6 bonus
     const weights = [];
     const pool = [];
+    const _dirFixed = state.direction !== "mixed";
     for(const v of batch){
       const p = progressFor(keyOf(v.es));
+      // Per-direction mastery: count correct answers in the direction we'll show.
+      const dc = _dirFixed
+        ? dirCorrect(p, state.direction)
+        : Math.min(dirCorrect(p, "es-en"), dirCorrect(p, "en-es"));
       let w;
-      if(p.lastSeen === null) w = 4;
-      else if(p.box >= 5) w = 0.3;
-      else if(p.box >= 4) w = 1;
-      else if(p.box >= 3) w = 2;
-      else if(p.box >= 2) w = 5;
-      else w = 8;  // box 1 — the bread-and-butter drilling tier
-      if(p.wrong > p.correct) w += 6;
+      if(p.lastSeen === null) w = 4;   // brand-new word: introduce steadily
+      else if(dc >= 2) w = 0.12;       // answered right 2x in this direction: show only rarely
+      else if(dc === 1) w = 5;         // one right in this direction: push toward mastery
+      else w = 8;                      // seen but not yet right in this direction: drill hardest
+      if(p.wrong > p.correct) w += 6;  // struggling overall: always resurface
       pool.push(v);
       weights.push(w);
     }
@@ -6017,7 +6055,13 @@ function pickNext(){
   if(pool.length === 0) return null;
   let card;
   if(state.vocabOrder === "smart" || state.mode === "srs"){
-    const weights = pool.map(v => 6 - progressFor(keyOf(v.es)).box);
+    const weights = pool.map(v => {
+      const p = progressFor(keyOf(v.es));
+      const dc = state.direction !== "mixed"
+        ? dirCorrect(p, state.direction)
+        : Math.min(dirCorrect(p, "es-en"), dirCorrect(p, "en-es"));
+      return dc >= 2 ? 0.15 : (6 - p.box);
+    });
     const total = weights.reduce((a,b)=>a+b,0);
     let r = Math.random() * total;
     for(let i=0; i<pool.length; i++){ r -= weights[i]; if(r<=0){card=pool[i]; break;} }
@@ -6112,6 +6156,7 @@ function applyTabUI(){
   document.body.classList.toggle("tasks-mode", state.activeTab === "tasks");
   document.body.classList.toggle("class-mode", state.activeTab === "class");
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
+  if(typeof updateModePill === "function") updateModePill();
 }
 
 // === Class tab ===
@@ -6583,8 +6628,10 @@ function mark(correct){
   const p = progressFor(k);
   const prevBox = p.box;
   p.lastSeen = state.session;
-  if(correct){ p.correct++; state.totalCorrect++; state.streak++; p.box = Math.min(5, p.box+1); }
-  else { p.wrong++; state.totalWrong++; state.streak = 0; p.box = 1; }
+  if(!p.cd) p.cd = {};
+  const _dir = state.currentDir || state.direction || "es-en";
+  if(correct){ p.correct++; state.totalCorrect++; state.streak++; p.box = Math.min(5, p.box+1); p.cd[_dir] = (p.cd[_dir] || 0) + 1; }
+  else { p.wrong++; state.totalWrong++; state.streak = 0; p.box = 1; p.cd[_dir] = 0; }
   p.nextReview = state.session + INTERVALS[p.box - 1];
   state.session++;
   saveState();
@@ -6633,8 +6680,11 @@ function normalizeForCompare(s){
 function checkTypedAnswer(typed, correct){
   const t = normalizeForCompare(typed);
   if(!t) return false;
-  const alts = correct.split(/\s*\/\s*|\s*;\s*/).map(normalizeForCompare).filter(Boolean);
-  return alts.some(a => a === t);
+  // Accept any listed meaning: split on / ; , and treat "word = gloss" as two options.
+  const raw = String(correct).replace(/\s*=\s*/g, " / ");
+  const alts = raw.split(/\s*\/\s*|\s*;\s*|\s*,\s*/).map(normalizeForCompare).filter(Boolean);
+  if(alts.some(a => a === t)) return true;
+  return normalizeForCompare(correct) === t;
 }
 
 function handleTypeCheck(){
@@ -6917,7 +6967,7 @@ document.querySelectorAll(".tab").forEach(t => {
     else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
     else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
     else if(state.activeTab === "class"){ renderClass(); updateStats(); }
-    else { next(); }
+    else { next(); openVocabStart(); }
   });
 });
 
@@ -6983,6 +7033,41 @@ const vocabOrderGroup = $("#vocab-order-group");
 dirGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.direction = b.dataset.dir; setActive(dirGroup, state.direction, "dir"); saveState(); next(); }));
 modeGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.mode = b.dataset.mode; setActive(modeGroup, state.mode, "mode"); saveState(); next(); }));
 amodeGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.answerMode = b.dataset.amode; setActive(amodeGroup, state.answerMode, "amode"); saveState(); applyAnswerModeUI(); next(); }));
+
+// === Vocab start chooser (direction + answer style, shown when you open Vocab) ===
+const vstartBg = $("#vocab-start-bg");
+const vstartDirGroup = $("#vstart-dir-group");
+const vstartAmodeGroup = $("#vstart-amode-group");
+function updateModePill(){
+  const el = $("#mode-pill"); if(!el) return;
+  const d = state.direction === "es-en" ? "ES → EN" : state.direction === "en-es" ? "EN → ES" : "Mixed";
+  const a = state.answerMode === "type" ? "Type" : "Flip";
+  el.textContent = `${d} · ${a}  ⇄ change`;
+}
+function openVocabStart(){
+  setActive(vstartDirGroup, state.direction, "vsdir");
+  setActive(vstartAmodeGroup, state.answerMode, "vsamode");
+  vstartBg.classList.add("open");
+}
+vstartDirGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
+  state.direction = b.dataset.vsdir; setActive(vstartDirGroup, state.direction, "vsdir");
+}));
+vstartAmodeGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
+  state.answerMode = b.dataset.vsamode; setActive(vstartAmodeGroup, state.answerMode, "vsamode");
+}));
+$("#vstart-go-btn").addEventListener("click", () => {
+  // keep the Settings panel segments in sync with the choice made here
+  setActive(dirGroup, state.direction, "dir");
+  setActive(amodeGroup, state.answerMode, "amode");
+  saveState();
+  applyAnswerModeUI();
+  updateModePill();
+  vstartBg.classList.remove("open");
+  state.currentKey = null;
+  next();
+});
+vstartBg.addEventListener("click", e => { if(e.target === vstartBg) vstartBg.classList.remove("open"); });
+$("#mode-pill").addEventListener("click", openVocabStart);
 filterGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => { state.filter = b.dataset.filter; setActive(filterGroup, state.filter, "filter"); saveState(); next(); }));
 vocabOrderGroup.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
   state.vocabOrder = b.dataset.vo; setActive(vocabOrderGroup, state.vocabOrder, "vo");
@@ -7394,11 +7479,12 @@ applyAnswerModeUI();
 applyTabUI();
 rebuildVocab();
 populateTopics();
+updateModePill();
 if(state.activeTab === "exer") exerNext();
 else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
 else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
 else if(state.activeTab === "class"){ renderClass(); updateStats(); }
-else next();
+else { next(); openVocabStart(); }
 </script>
 </body>
 </html>
