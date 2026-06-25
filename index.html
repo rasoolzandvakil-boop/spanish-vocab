@@ -157,6 +157,11 @@
   .lesson-meta{font-size:11px; color:var(--muted);}
   .lesson-content{font-size:13px; color:var(--ink); line-height:1.75; padding-top:10px; white-space:pre-wrap; word-wrap:break-word; max-height:0; overflow:hidden; transition:max-height 0.3s; user-select:text; -webkit-user-select:text;}
   .lesson-card.open .lesson-content{max-height:none; padding-top:10px;}
+  /* Lesson search */
+  .class-search{width:100%; padding:10px 12px; border:1.5px solid rgba(0,0,0,0.10); border-radius:10px; font-size:14px; font-family:inherit; background:var(--card-bg); color:var(--ink); -webkit-appearance:none; flex-shrink:0;}
+  #class-search-info{font-size:12px; color:var(--muted); padding:2px 2px 0; min-height:14px;}
+  .lesson-card.search-hidden{display:none;}
+  .lw.search-hit{background:#ffe28a; color:#5a4500; font-weight:700; box-shadow:0 0 0 1px #f3cd6a inset;}
   /* Clickable Spanish word in a lesson */
   .lw{cursor:pointer; padding:1px 2px; border-radius:3px; -webkit-tap-highlight-color:rgba(196,77,60,0.20); transition:background 0.1s;}
   .lw:active{background:rgba(196,77,60,0.18);}
@@ -331,6 +336,8 @@
         </div>
       </div>
       <div class="class-past" id="class-past">
+        <input type="text" id="class-search" class="class-search" placeholder="🔍 Search lessons for a word or phrase…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div id="class-search-info"></div>
         <div id="class-past-list"></div>
       </div>
     </div>
@@ -6234,6 +6241,52 @@ function renderClass(){
       openAddFromLesson(w.dataset.w);
     });
   }
+  // Keep the "Past lessons (N)" tab label accurate
+  const pastTab = document.querySelector('.class-tab[data-class-tab="past"]');
+  if(pastTab) pastTab.textContent = `📚 Past lessons (${LESSONS.length})`;
+  // Bind the lesson search box once (the cards now exist)
+  const csearch = $("#class-search");
+  if(csearch && !csearch.dataset.bound){
+    csearch.dataset.bound = "1";
+    csearch.addEventListener("input", e => filterLessons(e.target.value));
+  }
+  if(csearch && csearch.value) filterLessons(csearch.value);
+}
+
+// Search past lessons by a word or phrase: hide non-matching lessons, expand the
+// matches, and highlight the matching words. Accent- and case-insensitive.
+function normSearch(s){ return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+function filterLessons(q){
+  const list = document.getElementById("class-past-list");
+  if(!list) return;
+  const cards = Array.from(list.querySelectorAll(".lesson-card"));
+  const info = document.getElementById("class-search-info");
+  list.querySelectorAll(".lw.search-hit").forEach(s => s.classList.remove("search-hit"));
+  const nq = normSearch(q).trim();
+  if(!nq){
+    cards.forEach((c, i) => { c.classList.remove("search-hidden"); c.classList.toggle("open", i === 0); });
+    if(info) info.textContent = "";
+    return;
+  }
+  const tokens = nq.split(/\s+/).filter(Boolean);
+  let matches = 0;
+  cards.forEach(c => {
+    const content = c.querySelector(".lesson-content");
+    const txt = normSearch(content ? content.textContent : "");
+    const hit = txt.includes(nq);
+    c.classList.toggle("search-hidden", !hit);
+    if(hit){
+      matches++;
+      c.classList.add("open");
+      content.querySelectorAll(".lw").forEach(sp => {
+        const w = normSearch(sp.textContent);
+        if(tokens.some(t => w === t || (t.length >= 3 && w.includes(t)))) sp.classList.add("search-hit");
+      });
+    }
+  });
+  if(info) info.textContent = matches
+    ? `${matches} lesson${matches > 1 ? "s" : ""} ${matches === 1 ? "mentions" : "mention"} "${q.trim()}" — tap one to read it`
+    : `No lessons mention "${q.trim()}"`;
 }
 
 // Open the +Add modal pre-filled with a Spanish word/phrase from a lesson.
