@@ -6263,37 +6263,118 @@ function renderClass(){
 // Search past lessons by a word or phrase: hide non-matching lessons, expand the
 // matches, and highlight the matching words. Accent- and case-insensitive.
 function normSearch(s){ return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+
+// Filler words to ignore so "find lectures that talk about the subjunctive" reduces
+// to just "subjunctive". Covers English question/filler words + Spanish articles.
+const SEARCH_STOPWORDS = new Set(("a an the of to in on at for about that this these those there here " +
+  "find show me give bring list lectures lecture lessons lesson class classes session sessions topic topics " +
+  "talk talks talked talking discuss discusses discussed discussing cover covers covered covering mention mentions " +
+  "explain explains explained where what which who whom when how why is are was were do does did with and or also " +
+  "i want need would like can could about regarding related teach taught learn learned use used using " +
+  "el la los las un una unos unas de del que como en para por con mi tu su lo se y o sobre tema clase clases").split(/\s+/));
+
+// Concept expansion: map a grammar topic (normalized, accent-free) to surface
+// strings that actually appear in the lessons. Lets a conceptual query match
+// even when the lesson never uses the textbook name.
+const SEARCH_SYNONYMS = {
+  "se": ["se me", "se le", "se nos", "se te", "sin querer", "accidental"],
+  "accidental": ["se me cayo", "se me olvido", "se rompio", "se perdio", "se me", "sin querer", "involuntario", "no fault"],
+  "subjunctive": ["subjuntivo", "ojala", "espero que", "quiero que", "que + subjuntivo", "es importante que"],
+  "subjuntivo": ["subjunctive", "ojala", "espero que", "quiero que"],
+  "preterite": ["preterito", "indefinido"],
+  "preterito": ["preterite", "indefinido"],
+  "imperfect": ["imperfecto", "imperfect"],
+  "imperfecto": ["imperfect"],
+  "ser": ["ser vs estar", "ser o estar"],
+  "estar": ["ser vs estar", "ser o estar"],
+  "por": ["por vs para", "por o para"],
+  "para": ["por vs para", "por o para"],
+  "reflexive": ["reflexivo", "reflexivos", "se ", "me ", "te "],
+  "reflexivo": ["reflexive", "se ", "me ", "te "],
+  "commands": ["imperativo", "imperative", "manda", "haz", "ven"],
+  "imperative": ["imperativo", "commands"],
+  "conditional": ["condicional", "ria", "habria"],
+  "future": ["futuro", "voy a", "ire"],
+  "gustar": ["me gusta", "me gustan", "verbos como gustar"],
+  "prepositions": ["preposiciones", "preposicion"],
+  "articles": ["articulos", "articulo", "el la los las"],
+  "accent": ["acento", "tilde", "acentuacion"],
+  "pronoun": ["pronombre", "pronombres", "lo la le les"],
+  "pronouns": ["pronombre", "pronombres", "lo la le les"]
+};
+
+let originalLessonOrder = null;
+
+function expandSearchTerms(rawQuery){
+  const nq = normSearch(rawQuery).replace(/[^a-z0-9ñ ]/g, " ").replace(/\s+/g, " ").trim();
+  const words = nq.split(" ").filter(Boolean);
+  const meaningful = words.filter(w => w.length > 1 && !SEARCH_STOPWORDS.has(w));
+  const phrases = new Set();   // multi-word strings -> strong matches
+  const singles = new Set();   // single words -> highlight + weaker match
+  const base = (meaningful.length ? meaningful : words);
+  // full meaningful phrase
+  if(base.length > 1) phrases.add(base.join(" "));
+  base.forEach(w => {
+    singles.add(w);
+    (SEARCH_SYNONYMS[w] || []).forEach(s => {
+      const ns = normSearch(s).trim();
+      if(ns.includes(" ")) phrases.add(ns); else if(ns) singles.add(ns);
+    });
+  });
+  // keep the raw full phrase too (helps exact lookups)
+  if(nq && nq.includes(" ")) phrases.add(nq);
+  return { phrases: [...phrases].filter(Boolean), singles: [...singles].filter(Boolean), meaningful: base };
+}
+
+function scoreLesson(txt, terms){
+  let score = 0;
+  terms.phrases.forEach(p => { if(p && txt.includes(p)) score += 8 + p.length / 8; });
+  terms.singles.forEach(w => {
+    if(!w) return;
+    let idx = txt.indexOf(w), cnt = 0;
+    while(idx >= 0 && cnt < 6){ cnt++; idx = txt.indexOf(w, idx + w.length); }
+    if(cnt) score += Math.min(cnt, 4) * (w.length >= 4 ? 2 : 1);
+  });
+  return score;
+}
+
 function filterLessons(q){
   const list = document.getElementById("class-past-list");
   if(!list) return;
-  const cards = Array.from(list.querySelectorAll(".lesson-card"));
   const info = document.getElementById("class-search-info");
+  const cards = Array.from(list.querySelectorAll(".lesson-card"));
+  if(!originalLessonOrder) originalLessonOrder = cards.slice();
   list.querySelectorAll(".lw.search-hit").forEach(s => s.classList.remove("search-hit"));
   const nq = normSearch(q).trim();
   if(!nq){
-    cards.forEach((c, i) => { c.classList.remove("search-hidden"); c.classList.toggle("open", i === 0); });
+    // restore original (newest-first) order and default open state
+    originalLessonOrder.forEach((c, i) => { c.classList.remove("search-hidden"); c.classList.toggle("open", i === 0); list.appendChild(c); });
     if(info) info.textContent = "";
     return;
   }
-  const tokens = nq.split(/\s+/).filter(Boolean);
-  let matches = 0;
-  cards.forEach(c => {
+  const terms = expandSearchTerms(q);
+  const scored = cards.map(c => {
     const content = c.querySelector(".lesson-content");
     const txt = normSearch(content ? content.textContent : "");
-    const hit = txt.includes(nq);
-    c.classList.toggle("search-hidden", !hit);
-    if(hit){
-      matches++;
-      c.classList.add("open");
-      content.querySelectorAll(".lw").forEach(sp => {
-        const w = normSearch(sp.textContent);
-        if(tokens.some(t => w === t || (t.length >= 3 && w.includes(t)))) sp.classList.add("search-hit");
-      });
-    }
+    return { c, content, score: scoreLesson(txt, terms) };
   });
-  if(info) info.textContent = matches
-    ? `${matches} lesson${matches > 1 ? "s" : ""} ${matches === 1 ? "mentions" : "mention"} "${q.trim()}" — tap one to read it`
-    : `No lessons mention "${q.trim()}"`;
+  const matched = scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score);
+  // hide everything, then reveal matches in relevance order (most relevant first)
+  cards.forEach(s => s.classList.add("search-hidden"));
+  const hi = new Set(terms.singles.filter(w => w.length >= 2));
+  matched.forEach(({ c, content }) => {
+    c.classList.remove("search-hidden");
+    c.classList.add("open");
+    list.appendChild(c);
+    content.querySelectorAll(".lw").forEach(sp => {
+      const w = normSearch(sp.textContent);
+      if([...hi].some(t => w === t || (t.length >= 3 && w.includes(t)))) sp.classList.add("search-hit");
+    });
+  });
+  const label = terms.meaningful.join(" ") || q.trim();
+  if(info) info.textContent = matched.length
+    ? `${matched.length} lesson${matched.length > 1 ? "s" : ""} about “${label}” — most relevant first`
+    : `Nothing found for “${label}”. Try a simpler keyword.`;
 }
 
 // Open the +Add modal pre-filled with a Spanish word/phrase from a lesson.
