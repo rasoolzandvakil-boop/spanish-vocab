@@ -269,6 +269,7 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       <button class="mode-pill" id="mode-pill" type="button" aria-label="Change practice direction or answer mode"></button>
     </div>
+    <button class="icon-btn" id="back-btn" aria-label="Previous card" title="Previous card" style="display:none;">↩</button>
     <button class="icon-btn add" id="add-btn" aria-label="Add words">+</button>
     <button class="icon-btn" id="shuffle-btn" aria-label="Skip">↷</button>
   </header>
@@ -5832,7 +5833,7 @@ const STORAGE_KEY = "spanish_vocab_v4";
 function defaultState(){
   return {
     cardProgress: {}, exerProgress: {}, session: 0,
-    direction:"es-en", mode:"srs", answerMode:"tap", filter:"all", topic:"All topics",
+    direction:"es-en", mode:"srs", answerMode:"type", filter:"all", topic:"All topics",
     activeTab:"vocab",
     accent:"es-ES", autoSpeak:"on",
     voiceES:"", voiceMX:"",
@@ -5868,7 +5869,12 @@ function loadState(){
       merged.masteryBatchIndex = 0;
       merged.currentKey = null;
     }
-    merged.stateVersion = 22;
+    // v23: typing is now the default way to answer flashcards (you can still
+    // switch back to "Tap to flip" in the start chooser or Settings).
+    if((s.stateVersion || 0) < 23){
+      merged.answerMode = "type";
+    }
+    merged.stateVersion = 23;
     return merged;
   } catch { return defaultState(); }
 }
@@ -6164,6 +6170,7 @@ function applyTabUI(){
   document.body.classList.toggle("class-mode", state.activeTab === "class");
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
   if(typeof updateModePill === "function") updateModePill();
+  if(typeof updateBackBtn === "function") updateBackBtn();
 }
 
 // === Class tab ===
@@ -6674,7 +6681,35 @@ function flip(){
     }
   }
 }
-function next(){ rebuildVocab(); pickNext(); renderCard(); }
+// History of cards shown this session, so you can step back to ones you've seen.
+let cardHistory = [];
+function updateBackBtn(){
+  const b = document.getElementById("back-btn");
+  if(!b) return;
+  b.style.display = (state.activeTab === "vocab" && cardHistory.length > 0) ? "" : "none";
+}
+function next(){
+  rebuildVocab();
+  // Remember the card we're leaving so Back can return to it.
+  if(state.currentKey){
+    cardHistory.push({ key: state.currentKey, dir: state.currentDir });
+    if(cardHistory.length > 80) cardHistory.shift();
+  }
+  pickNext();
+  renderCard();
+  updateBackBtn();
+}
+function goBack(){
+  if(!cardHistory.length) return;
+  const h = cardHistory.pop();
+  rebuildVocab();
+  if(!VOCAB_BY_KEY.has(h.key)){ updateBackBtn(); return; }
+  state.currentKey = h.key;
+  state.currentDir = h.dir || state.direction;
+  state.showingBack = false;
+  renderCard();
+  updateBackBtn();
+}
 function mark(correct){
   const k = state.currentKey;
   if(!k) return;
@@ -6808,6 +6843,7 @@ cardWrap.addEventListener("touchend", e => {
 $("#miss-btn").addEventListener("click", () => { if(!state.showingBack) flip(); setTimeout(()=>mark(false), 200); });
 $("#hit-btn").addEventListener("click", () => { if(!state.showingBack) flip(); setTimeout(()=>mark(true), 200); });
 $("#shuffle-btn").addEventListener("click", () => state.activeTab === "exer" ? exerNext() : next());
+$("#back-btn").addEventListener("click", goBack);
 
 // === Exercises ===
 function getExercisePool(){
