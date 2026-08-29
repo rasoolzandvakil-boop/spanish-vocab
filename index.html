@@ -161,6 +161,44 @@ body.session-done .card-wrap, body.session-done .type-area, body.session-done .t
   body.class-mode .card-wrap, body.class-mode .tap-hint{display:none;}
   body.class-mode main{padding:0; gap:0;}
   /* Class panel */
+  
+  /* === Books tab === */
+  .books-panel{display:none; width:100%; max-width:900px; flex-direction:column; height:100%; overflow:hidden;}
+  body.books-mode .books-panel{display:flex;}
+  body.books-mode .card-wrap, body.books-mode .tap-hint{display:none;}
+  body.books-mode footer{display:none;}
+  body.books-mode main{padding:0; gap:0;}
+  .books-lib{overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:12px;}
+  .books-lib-intro{font-size:13px; color:var(--muted); line-height:1.45; padding:0 2px;}
+  .book-card{background:var(--card-bg); border-radius:14px; box-shadow:var(--shadow); padding:14px 16px; cursor:pointer;}
+  .book-card h3{margin:0 0 2px; font-size:16px;}
+  .book-meta{font-size:12px; color:var(--muted); margin-bottom:6px;}
+  .book-level{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--green); border-radius:6px; padding:1px 7px; margin-left:6px; vertical-align:1px;}
+  .book-level.b2{background:var(--blue);}
+  .book-blurb{font-size:13px; opacity:.85; line-height:1.4;}
+  .book-progress{font-size:11px; color:var(--muted); margin-top:6px;}
+  .books-reader{flex:1; display:none; flex-direction:column; overflow:hidden; position:relative;}
+  .reader-top{display:flex; gap:8px; padding:8px 12px; background:var(--card-bg); border-bottom:1px solid rgba(0,0,0,0.06); flex-shrink:0; align-items:center;}
+  .reader-back{border:none; background:rgba(196,77,60,0.08); color:var(--accent); border-radius:8px; padding:8px 10px; font-weight:600; cursor:pointer; font-family:inherit; font-size:13px; white-space:nowrap;}
+  .reader-ch{flex:1; min-width:0; padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.12); background:var(--card-bg); font-family:inherit; font-size:13px;}
+  .reader-scroll{flex:1; overflow-y:auto; padding:18px 18px 30px; -webkit-overflow-scrolling:touch;}
+  .reader-title{font-size:17px; margin:0 0 14px; max-width:640px; margin-left:auto; margin-right:auto;}
+  .reader-text{font-size:17px; line-height:1.75; max-width:640px; margin:0 auto;}
+  .reader-text p{margin:0 0 1em;}
+  .reader-hint{max-width:640px; margin:0 auto 14px; font-size:12px; color:var(--muted);}
+  .bw{cursor:pointer; border-radius:3px;}
+  .bw.sel{background:var(--yellow);}
+  .reader-nav{display:flex; gap:10px; justify-content:space-between; max-width:640px; margin:24px auto 0;}
+  .reader-navbtn{border:none; background:var(--accent); color:#fff; border-radius:10px; padding:10px 16px; font-weight:600; cursor:pointer; font-family:inherit; font-size:14px;}
+  .reader-navbtn:disabled{opacity:.35;}
+  .word-pop{position:absolute; left:12px; right:12px; bottom:calc(12px + var(--safe-bot)); background:var(--card-bg); border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,0.25); padding:12px 14px; z-index:50; max-width:500px; margin:0 auto;}
+  .word-pop-row{display:flex; align-items:center; gap:8px;}
+  .word-pop-es{font-weight:700; font-size:16px; flex:1;}
+  .word-pop-speak,.word-pop-close{border:none; background:rgba(0,0,0,0.05); border-radius:8px; padding:5px 9px; cursor:pointer; font-size:14px;}
+  .word-pop-en{font-size:14px; margin-top:6px; color:var(--ink);}
+  .word-pop-en.miss{color:var(--muted); font-style:italic;}
+  .word-pop-link{display:inline-block; margin-top:6px; font-size:12px; color:var(--blue); text-decoration:none; font-weight:600;}
+
   .class-panel{display:none; width:100%; max-width:900px; flex-direction:column; height:100%; overflow-y:auto;}
   body.class-mode .class-panel{display:flex;}
   .class-tabbar{display:flex; gap:4px; padding:8px 12px; flex-shrink:0; background:var(--card-bg); border-bottom:1px solid rgba(0,0,0,0.06);}
@@ -313,6 +351,7 @@ body.session-done .card-wrap, body.session-done .type-area, body.session-done .t
     <button class="tab" data-tab="mist">Mistakes</button>
     <button class="tab" data-tab="tasks">Tasks</button>
     <button class="tab" data-tab="class">Class</button>
+    <button class="tab" data-tab="books">Books</button>
   </div>
   <main>
     <div class="card-wrap" id="card-wrap">
@@ -389,6 +428,36 @@ body.session-done .card-wrap, body.session-done .type-area, body.session-done .t
         <input type="text" id="class-search" class="class-search" placeholder="🔍 Keyword search lessons…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <div id="class-search-info"></div>
         <div id="class-past-list"></div>
+      </div>
+    </div>
+
+
+    <!-- Books panel: free public-domain readers -->
+    <div class="books-panel" id="books-panel">
+      <div class="books-lib" id="books-lib"></div>
+      <div class="books-reader" id="books-reader">
+        <div class="reader-top">
+          <button class="reader-back" id="reader-back">&larr; Books</button>
+          <select id="reader-ch" class="reader-ch"></select>
+        </div>
+        <div class="reader-scroll" id="reader-scroll">
+          <h2 class="reader-title" id="reader-title"></h2>
+          <div class="reader-hint">Toca cualquier palabra para ver su traducci&oacute;n.</div>
+          <div class="reader-text" id="reader-text"></div>
+          <div class="reader-nav">
+            <button id="reader-prev" class="reader-navbtn">&larr; Anterior</button>
+            <button id="reader-next" class="reader-navbtn">Siguiente &rarr;</button>
+          </div>
+        </div>
+        <div class="word-pop" id="word-pop" style="display:none;">
+          <div class="word-pop-row">
+            <span class="word-pop-es" id="word-pop-es"></span>
+            <button class="word-pop-speak" id="word-pop-speak" aria-label="Pronounce">&#128266;</button>
+            <button class="word-pop-close" id="word-pop-close" aria-label="Close">&#10005;</button>
+          </div>
+          <div class="word-pop-en" id="word-pop-en"></div>
+          <a class="word-pop-link" id="word-pop-link" target="_blank" rel="noopener">SpanishDict &rarr;</a>
+        </div>
       </div>
     </div>
 
@@ -6351,6 +6420,7 @@ function applyTabUI(){
   document.body.classList.toggle("mist-mode", state.activeTab === "mist");
   document.body.classList.toggle("tasks-mode", state.activeTab === "tasks");
   document.body.classList.toggle("class-mode", state.activeTab === "class");
+  document.body.classList.toggle("books-mode", state.activeTab === "books");
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === state.activeTab));
   if(typeof updateModePill === "function") updateModePill();
   if(typeof updateBackBtn === "function") updateBackBtn();
@@ -7014,6 +7084,11 @@ function updateStats(){
     const visitedCount = Object.values(state.visitedTasks || {}).filter(Boolean).length;
     $("#stats").textContent = `Tasks: ${visitedCount}/${TASKS.length} visited`;
     $("#progress-fill").style.width = (visitedCount / TASKS.length * 100).toFixed(1) + "%";
+  } else if(state.activeTab === "books"){
+    const prog = bookProg();
+    const started = Object.keys(prog).filter(s => BOOKS.some(b => b.slug === s)).length;
+    $("#stats").textContent = `Books: ${started}/${BOOKS.length} started`;
+    $("#progress-fill").style.width = (started / BOOKS.length * 100).toFixed(1) + "%";
   } else {
     const q = queueCounts();
     const left = q.learn + q.revLeft + q.newLeft;
@@ -7495,6 +7570,155 @@ $("#exer-speak").addEventListener("click", e => {
   if(text) speakSpanish(text, e.currentTarget);
 });
 
+
+// === Books tab: free public-domain readers ===
+const BOOKS = [{"slug":"cuentos-de-la-selva","title":"Cuentos de la selva","author":"Horacio Quiroga","level":"B1","blurb":"Ocho cuentos de animales de la selva de Misiones. Frases cortas y mucho diálogo: el punto de entrada ideal.","chapters":8,"words":17630},{"slug":"platero-y-yo","title":"Platero y yo","author":"Juan Ramón Jiménez","level":"B1-B2","blurb":"Capítulos muy cortos y poéticos sobre un burrito andaluz. Premio Nobel 1956.","chapters":32,"words":8556},{"slug":"marianela","title":"Marianela","author":"Benito Pérez Galdós","level":"B2","blurb":"Novela corta sobre una huérfana y un joven ciego en el norte de España.","chapters":22,"words":50432},{"slug":"cuentos-amor-locura-muerte","title":"Cuentos de amor de locura y de muerte","author":"Horacio Quiroga","level":"B2","blurb":"Dieciocho cuentos intensos del maestro rioplatense del relato corto.","chapters":18,"words":49063},{"slug":"cuentos-de-amor","title":"Cuentos de amor","author":"Emilia Pardo Bazán","level":"B2","blurb":"Cuentos breves sobre el amor en todas sus formas, con algo de ortografía del siglo XIX (á, é).","chapters":43,"words":61607},{"slug":"sombrero-tres-picos","title":"El sombrero de tres picos","author":"Pedro Antonio de Alarcón","level":"B2","blurb":"Comedia clásica de enredos en un molino andaluz. Capítulos cortos.","chapters":35,"words":24124}];
+const bookCache = {};
+let curBook = null, curCh = 0;
+
+function bookProg(){
+  try { return JSON.parse(localStorage.getItem("bookProgress") || "{}"); } catch { return {}; }
+}
+function saveBookProg(p){
+  try { localStorage.setItem("bookProgress", JSON.stringify(p)); } catch {}
+}
+
+let BOOK_DICT = null;
+function bookDict(){
+  if(BOOK_DICT) return BOOK_DICT;
+  BOOK_DICT = new Map();
+  const add = (k, en) => { if(k && !BOOK_DICT.has(k)) BOOK_DICT.set(k, en); };
+  for(const v of BUNDLED_VOCAB){
+    const k = v.es.toLowerCase().trim();
+    add(k, v.en);
+    const stripped = k.replace(/^(el|la|los|las|un|una)\s+/, "");
+    if(stripped !== k) add(stripped, v.en);
+  }
+  return BOOK_DICT;
+}
+function bookLookup(raw){
+  const d = bookDict();
+  const w = raw.toLowerCase().replace(/^[^a-záéíóúñü]+|[^a-záéíóúñü]+$/gi, "");
+  if(!w) return null;
+  const tries = [w];
+  if(w.endsWith("es")) tries.push(w.slice(0, -2));
+  if(w.endsWith("s")) tries.push(w.slice(0, -1));
+  if(w.endsWith("a")) tries.push(w.slice(0, -1) + "o");   // adjective fem -> masc
+  if(w.endsWith("as")) tries.push(w.slice(0, -2) + "o");
+  if(w.endsWith("mente")) tries.push(w.slice(0, -5));      // adverb -> stem
+  for(const t of tries){ if(d.has(t)) return { word: w, en: d.get(t) }; }
+  return { word: w, en: null };
+}
+
+function renderBooks(){
+  const lib = $("#books-lib"), rd = $("#books-reader");
+  if(curBook){ lib.style.display = "none"; rd.style.display = "flex"; return; }
+  rd.style.display = "none"; lib.style.display = "flex";
+  const prog = bookProg();
+  lib.innerHTML = `<div class="books-lib-intro">Lecturas gratuitas de dominio p&uacute;blico, ordenadas de m&aacute;s f&aacute;cil a m&aacute;s dif&iacute;cil. Toca una palabra en el texto para ver su traducci&oacute;n.</div>` +
+    BOOKS.map(b => {
+      const p = prog[b.slug];
+      const pct = p ? Math.round(((p.ch + 1) / b.chapters) * 100) : 0;
+      return `<div class="book-card" data-slug="${b.slug}">
+        <h3>${escapeHtml(b.title)}<span class="book-level${b.level.startsWith("B2") ? " b2" : ""}">${b.level}</span></h3>
+        <div class="book-meta">${escapeHtml(b.author)} &middot; ${b.chapters} cap&iacute;tulos &middot; ${(b.words/1000).toFixed(0)}k palabras</div>
+        <div class="book-blurb">${escapeHtml(b.blurb)}</div>
+        <div class="book-progress">${p ? "&#128278; Capítulo " + (p.ch + 1) + " de " + b.chapters + " (" + pct + "%)" : "Sin empezar"}</div>
+      </div>`;
+    }).join("");
+}
+
+function openBook(slug){
+  const meta = BOOKS.find(b => b.slug === slug);
+  if(!meta) return;
+  const go = data => {
+    curBook = data;
+    const p = bookProg()[slug];
+    const sel = $("#reader-ch");
+    sel.innerHTML = data.chapters.map((c, i) => `<option value="${i}">${i + 1}. ${escapeHtml(c.title)}</option>`).join("");
+    openChapter(p ? Math.min(p.ch, data.chapters.length - 1) : 0, p ? p.scroll : 0);
+    renderBooks();
+  };
+  if(bookCache[slug]){ go(bookCache[slug]); return; }
+  $("#books-lib").innerHTML = `<div class="books-lib-intro">Cargando ${escapeHtml(meta.title)}&hellip;</div>`;
+  fetch("books/" + slug + ".json")
+    .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => { bookCache[slug] = data; go(data); })
+    .catch(() => {
+      $("#books-lib").innerHTML = `<div class="books-lib-intro">No se pudo cargar el libro. Comprueba tu conexi&oacute;n e int&eacute;ntalo de nuevo.</div>`;
+      setTimeout(() => { curBook = null; renderBooks(); }, 1800);
+    });
+}
+
+function bookWordsHtml(text){
+  return text.split(/\n\n+/).map(par =>
+    "<p>" + par.split(/(\s+)/).map(tok =>
+      /[a-záéíóúñüA-ZÁÉÍÓÚÑÜ]/.test(tok) ? `<span class="bw">${escapeHtml(tok)}</span>` : escapeHtml(tok)
+    ).join("") + "</p>"
+  ).join("");
+}
+
+function openChapter(i, scroll){
+  if(!curBook) return;
+  curCh = Math.max(0, Math.min(i, curBook.chapters.length - 1));
+  const ch = curBook.chapters[curCh];
+  $("#reader-title").textContent = ch.title;
+  $("#reader-text").innerHTML = bookWordsHtml(ch.text);
+  $("#reader-ch").value = String(curCh);
+  $("#reader-prev").disabled = curCh === 0;
+  $("#reader-next").disabled = curCh === curBook.chapters.length - 1;
+  hideWordPop();
+  const sc = $("#reader-scroll");
+  sc.scrollTop = scroll ? scroll * (sc.scrollHeight - sc.clientHeight) : 0;
+  const prog = bookProg();
+  prog[curBook.slug] = { ch: curCh, scroll: scroll || 0 };
+  saveBookProg(prog);
+}
+
+function hideWordPop(){
+  $("#word-pop").style.display = "none";
+  const sel = $("#reader-text").querySelector(".bw.sel");
+  if(sel) sel.classList.remove("sel");
+}
+
+$("#books-lib").addEventListener("click", e => {
+  const card = e.target.closest(".book-card");
+  if(card) openBook(card.dataset.slug);
+});
+$("#reader-back").addEventListener("click", () => { curBook = null; hideWordPop(); renderBooks(); updateStats(); });
+$("#reader-ch").addEventListener("change", e => openChapter(parseInt(e.target.value, 10)));
+$("#reader-prev").addEventListener("click", () => openChapter(curCh - 1));
+$("#reader-next").addEventListener("click", () => openChapter(curCh + 1));
+$("#reader-scroll").addEventListener("scroll", () => {
+  if(!curBook) return;
+  clearTimeout(window.__bookScrollT);
+  window.__bookScrollT = setTimeout(() => {
+    if(!curBook) return;
+    const sc = $("#reader-scroll");
+    const max = sc.scrollHeight - sc.clientHeight;
+    const prog = bookProg();
+    prog[curBook.slug] = { ch: curCh, scroll: max > 0 ? sc.scrollTop / max : 0 };
+    saveBookProg(prog);
+  }, 400);
+});
+$("#reader-text").addEventListener("click", e => {
+  const t = e.target.closest(".bw");
+  if(!t){ hideWordPop(); return; }
+  const prev = $("#reader-text").querySelector(".bw.sel");
+  if(prev) prev.classList.remove("sel");
+  t.classList.add("sel");
+  const res = bookLookup(t.textContent);
+  if(!res){ hideWordPop(); return; }
+  $("#word-pop-es").textContent = res.word;
+  const en = $("#word-pop-en");
+  if(res.en){ en.textContent = res.en; en.classList.remove("miss"); }
+  else { en.textContent = "No está en tu vocabulario — mira en SpanishDict:"; en.classList.add("miss"); }
+  $("#word-pop-link").href = "https://www.spanishdict.com/translate/" + encodeURIComponent(res.word);
+  $("#word-pop-speak").onclick = () => speakSpanish(res.word);
+  $("#word-pop-close").onclick = hideWordPop;
+  $("#word-pop").style.display = "block";
+});
+
 // === Tab switching ===
 document.querySelectorAll(".tab").forEach(t => {
   t.addEventListener("click", () => {
@@ -7505,6 +7729,7 @@ document.querySelectorAll(".tab").forEach(t => {
     else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
     else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
     else if(state.activeTab === "class"){ renderClass(); updateStats(); }
+    else if(state.activeTab === "books"){ renderBooks(); updateStats(); }
     else { next(); openVocabStart(); }
   });
 });
@@ -8036,6 +8261,7 @@ if(state.activeTab === "exer") exerNext();
 else if(state.activeTab === "mist"){ renderMistakes(); updateStats(); }
 else if(state.activeTab === "tasks"){ renderTasks(); updateStats(); }
 else if(state.activeTab === "class"){ renderClass(); updateStats(); }
+    else if(state.activeTab === "books"){ renderBooks(); updateStats(); }
 else { next(); openVocabStart(); }
 </script>
 </body>
